@@ -1,5 +1,8 @@
 <?php
 
+
+use App\Http\Controllers\AdminController\CategoryController;
+use App\Http\Controllers\AdminController\PanelController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +27,7 @@ use Illuminate\Support\Facades\Route;
 --------------------------------------------------------------------------
 --------------------------------------------------------------------------
  *request   --->  php artisan make:request createSliderRequest   (name) OR updateSliderRequest
+ *request   --->  php artisan make:request AdminRequest\SliderCreateRequest   (name) OR SliderUpdateRequest *webamooz*
 --------------------------------------------------------------------------
 --------------------------------------------------------------------------
  *seedet    --->  php artisan make:seeder SliderTableSeeder
@@ -91,6 +95,23 @@ use Illuminate\Support\Facades\Route;
 8)  *Please run   " npm run dev "   to compile your fresh scaffolding.       // public app.css, app.js اضافه شد bootstrap آپدیت اضافه کردن پکیج های جدید به پروژه
 10)  *npm run prod  **اختیاری**                                                // public  app.css,app.js  |  app.min.css مرحله اختباری برای کم کردن حجم فایل ها مثل
 --------------------------------------------------------------------------
+
+
+
+-------------------------------------------------------------------------- Git  دستورات
+cd..                        ----->   back
+ls                          ----->   list
+ls -a                       ----->   list all
+ls -ah                      ----->   list all & hiiden
+git status                  ----->   status change project
+git add -A                  ----->   اضافه بشه همه تغییرات به قسمت صحنه یا استیج
+git add -all                ----->   اضافه بشه همه تغییرات به قسمت صحنه یا استیج
+git commit -m "text"        ----->   بعد مرحله (ادد) میایم اضافه میکنیم به (کامیت) و (مسیج) یا پیام مینویسیم توضیحات در مورد تغییرات
+git diff Head               ----->   تغییراتی که تو پروژه بوده نمایش میده   |   q خارج شدن از ترمینال   |  ctr + e  خط پایانی
+git restore  index.html     ----->   برای اینککه تغییرات به حالت قبل برگرده
+git checkout index.html     ----->   برای اینککه تغییرات به حالت قبل برگرده
+git clone https://github.com/mahdi99k/shoping.git   --->  یک حالت دانلود که ممکن همه فایل ها نیاد | یک حالت کلون که آدرس برمیداری این کد (گیت کلون) اولش میزنی
+--------------------------------------------------------------------------
 */
 
 Route::get("/" , function () {
@@ -98,16 +119,20 @@ Route::get("/" , function () {
 });
 
 
-Route::get("adminPanel" , function () {
-    return view('admin.index');
-});
+
 
 
 /* Route Website */
+
 /* End Route Website */
 
 /* Route BackEnd */
+Route::prefix('adminPanel')->group(function () {
 
+    Route::resource("/" , PanelController::class);
+    Route::resource("/category" , CategoryController::class)->parameters(['category' => 'id']);
+
+});
 /* End Route BackEnd */
 
 
@@ -115,15 +140,15 @@ Route::get("adminPanel" , function () {
 
 
 
-// GitHub email = mahdishmshm13781999@gmail.com   password = Mahdi1378@*99K
 
 
-// ---------------------------------- Laravel Shop  Lesson 4          07 : 00 ()    ------------------------------------
+// ---------------------------------- Laravel Shop  Lesson 11        00 : 00 (+1)    ------------------------------------
 
 
 // Login = email : mahdishmshm13781999@gmail.com     password = ~(W6pvO6*Mahdi99K*1JC2^E42WT5
-//Auth::routes(['register' => false]);     // ریجستر یا ثبت نام غیر فعال می کنه
+// GitHub email = mahdishmshm13781999@gmail.com   password = Mahdi1378@*99K
 
+//Auth::routes(['register' => false]);     // ریجستر یا ثبت نام غیر فعال می کنه=
 // laravel mix  :  package frontEnd  ,  mix file (js,less.sass,css , vue , react all.txt file asset  mixture save in folder public)
 
 //  <!-- --> Show Code    {{-- --}} No Show Code

@@ -829,6 +829,7 @@ textarea {
     font-size: 20px;
     padding-top: 3px;
     display: inline-block;
+    color: #C62828;
 }
 
 .margin-15 {
@@ -837,20 +838,23 @@ textarea {
 
 .notification__icon::before {
     content: '\e00e';
-    font-size: 20px;
+    font-size: 22px;
     padding-top: 3px;
     cursor: pointer;
+    color: #F57C00;
 }
 
 .notification__icon:hover::before {
-    color: #2b4a83;
-    transition: all 200ms ease;
-
+    /*color: #2b4a83;*/
+    color: #E65100;
+    transition: all 300ms ease;
 }
 
 .logout:hover::before {
-    color: #2b4a83;
-    transition: all 200ms ease;
+    /*color: #2b4a83;*/
+    color: #F44336;
+    font-weight: bold;
+    transition: all 300ms ease;
 
 }
 
@@ -980,7 +984,9 @@ textarea {
 
 .item-delete:before {
     content: '\e129';
-    font-size: 16px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #E57373;
 }
 
 .item-reject:before {
@@ -1010,7 +1016,8 @@ textarea {
 
 .item-edit:before {
     content: '\e141';
-    font-size: 16px;
+    font-size: 18px;
+    color: #536DFE;
 }
 .tab__box{
     background: #fff;
