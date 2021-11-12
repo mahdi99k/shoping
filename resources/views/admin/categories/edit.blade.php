@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title' , 'ویرایش دسته بندی ها')
+@section('title' , 'ویرایش دسته بندی')
 
 
 

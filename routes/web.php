@@ -1,8 +1,11 @@
 <?php
 
 
+use App\Http\Controllers\AdminController\BrandController;
 use App\Http\Controllers\AdminController\CategoryController;
 use App\Http\Controllers\AdminController\PanelController;
+use App\Http\Controllers\AdminController\ProductController;
+use App\Http\Controllers\ClientController\IndexController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -114,23 +117,19 @@ git clone https://github.com/mahdi99k/shoping.git   --->  یک حالت دانل
 --------------------------------------------------------------------------
 */
 
-Route::get("/" , function () {
-   return view('client.index');
-});
-
-
-
-
 
 /* Route Website */
-
+Route::get("/", [IndexController::class, "index"])->name('index');
 /* End Route Website */
+
 
 /* Route BackEnd */
 Route::prefix('adminPanel')->group(function () {
 
-    Route::resource("/" , PanelController::class);
-    Route::resource("/category" , CategoryController::class)->parameters(['category' => 'id']);
+    Route::resource("/", PanelController::class);
+    Route::resource("/category", CategoryController::class)->parameters(['category' => 'id']);
+    Route::resource("/brands" , BrandController::class)->parameters(['brands' => 'id']);
+    Route::resource('/product' , ProductController::class)->parameters(['product' => 'id']);
 
 });
 /* End Route BackEnd */
@@ -141,8 +140,7 @@ Route::prefix('adminPanel')->group(function () {
 
 
 
-
-// ---------------------------------- Laravel Shop  Lesson 11        00 : 00 (+1)    ------------------------------------
+// ---------------------------------- Laravel Shop  Lesson 22        06 : 40 (+1)    ------------------------------------
 
 
 // Login = email : mahdishmshm13781999@gmail.com     password = ~(W6pvO6*Mahdi99K*1JC2^E42WT5

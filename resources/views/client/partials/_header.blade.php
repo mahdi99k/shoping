@@ -36,7 +36,7 @@
         <!-- Header Row End-->
 
         <!-- Main آقایانu Start-->
-        @include('client.partials.childHeader._navbar')
+        @include('client.partials.childHeader._navbar' , ['categories' => $categories , 'brands' => $brands])
         <!-- Main آقایانu End-->
 
     </div>
