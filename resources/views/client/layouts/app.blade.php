@@ -1,5 +1,6 @@
 <!-- Header Project start -->
-@include('client.partials._header')
+@section('title'  , 'مارکت شاپ - قالب HTML فروشگاهی')
+@include('client.layouts._header')
 <!-- End Header Project end -->
 
 
@@ -9,10 +10,10 @@
 
 
 <!-- Feature Box Start-->
-@include('client.partials._containerFeatureBox')
+@include('client.layouts._containerFeatureBox')
 <!-- Feature Box End-->
 
 
 <!--Footer Start-->
-@include('client.partials._footer')
+@include('client.layouts._footer')
 <!--Footer End-->

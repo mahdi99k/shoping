@@ -50,7 +50,7 @@
                         @empty
 
                             <div class="col-lg-1 col-md-2 col-sm-3 col-xs-6"><a href="#">
-                                    <img src="client/image/product/apple_logo-60x60.jpg" title="اپل" alt="اپل"/>
+                                    <img src="/client/image/product/apple_logo-60x60.jpg" title="اپل" alt="اپل"/>
                                 </a><a href="#">اپل</a>
                             </div>
 
@@ -67,9 +67,9 @@
                                 <table>
                                     <tbody>
                                     <tr>
-                                        <td><img alt="" src="client/image/banner/cms-block.jpg"></td>
-                                        <td><img alt="" src="client/image/banner/responsive.jpg"></td>
-                                        <td><img alt="" src="client/image/banner/cms-block.jpg"></td>
+                                        <td><img alt="" src="/client/image/banner/cms-block.jpg"></td>
+                                        <td><img alt="" src="/client/image/banner/responsive.jpg"></td>
+                                        <td><img alt="" src="/client/image/banner/cms-block.jpg"></td>
                                     </tr>
                                     <tr>
                                         <td><h4>بلاک های محتوا</h4></td>

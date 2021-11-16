@@ -12,9 +12,11 @@ class IndexController extends Controller
 
     public function index()
     {
+        /*
         $categories = Category::query()->where('parent_id', '=', null)->get();            // اونایی که دسته پدر نیستن یا (نال) هستن تو منو نمایش نده
         $brands = Brand::all();
-        return view('client.index', compact('categories' , 'brands'));
+        return view('client.index' , compact('categories' , 'brands')); */
+        return view('client.index');
     }
 
 }

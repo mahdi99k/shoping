@@ -1,6 +1,6 @@
 @extends('admin.layouts.app')
 
-@section('title'){{ "برند ها" }}@endsection
+@section('title' , 'برند ها')
 
 
 @section('content')

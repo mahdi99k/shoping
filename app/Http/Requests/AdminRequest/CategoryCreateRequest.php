@@ -9,7 +9,7 @@ class CategoryCreateRequest extends FormRequest
 
     public function authorize()
     {
-        return true;           // user must first loggin Go show validate
+        return true;     // user must first loggin Go show validate
     }
 
 

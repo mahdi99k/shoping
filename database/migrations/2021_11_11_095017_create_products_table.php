@@ -11,13 +11,14 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained();      // خودکار پیدا میکنه کلید خارجی
-            $table->foreignId('brand_id')->constrained();
+            $table->foreignId('category_id')->constrained()->onDelete('cascade')->onUpdate('cascade');      // خودکار پیدا میکنه کلید خارجی
+            $table->foreignId('brand_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->string('name');
             $table->string('slug')->unique();     // برای آپدیت و دلیت و ساخت دیتا ها آیدی نمایش نده اسلاگ نمایش بده
             $table->integer('price');
             $table->text('image');
             $table->string('description' , 2000);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -4,7 +4,7 @@
             <!-- Logo Start -->
             <div class="col-table-cell col-lg-6 col-md-6 col-sm-12 col-xs-12 inner">
                 <div id="logo"><a href="index.html">
-                        <img class="img-responsive" src="client/image/logo.png" title="MarketShop"
+                        <img class="img-responsive" src="/client/image/logo.png" title="MarketShop"
                              alt="MarketShop"/>
                     </a></div>
             </div>
@@ -24,7 +24,7 @@
                                     <td class="text-center"><a href="product.html">
                                             <img class="img-thumbnail" title="کفش راحتی مردانه"
                                                  alt="کفش راحتی مردانه"
-                                                 src="client/image/product/sony_vaio_1-50x75.jpg"></a>
+                                                 src="/client/image/product/sony_vaio_1-50x75.jpg"></a>
                                     </td>
                                     <td class="text-left"><a href="product.html">کفش راحتی مردانه</a></td>
                                     <td class="text-right">x 1</td>
@@ -38,7 +38,7 @@
                                     <td class="text-center"><a href="product.html"><img class="img-thumbnail"
                                                                                         title="تبلت ایسر"
                                                                                         alt="تبلت ایسر"
-                                                                                        src="client/image/product/samsung_tab_1-50x75.jpg"></a>
+                                                                                        src="/client/image/product/samsung_tab_1-50x75.jpg"></a>
                                     </td>
                                     <td class="text-left"><a href="product.html">تبلت ایسر</a></td>
                                     <td class="text-right">x 1</td>

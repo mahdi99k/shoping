@@ -3,8 +3,10 @@
 
 use App\Http\Controllers\AdminController\BrandController;
 use App\Http\Controllers\AdminController\CategoryController;
+use App\Http\Controllers\AdminController\GalleryController;
 use App\Http\Controllers\AdminController\PanelController;
 use App\Http\Controllers\AdminController\ProductController;
+use App\Http\Controllers\ClientController\ProductController as ClientProductController;
 use App\Http\Controllers\ClientController\IndexController;
 use Illuminate\Support\Facades\Route;
 
@@ -102,24 +104,38 @@ use Illuminate\Support\Facades\Route;
 
 
 -------------------------------------------------------------------------- Git  دستورات
-cd..                        ----->   back
-ls                          ----->   list
-ls -a                       ----->   list all
-ls -ah                      ----->   list all & hiiden
-git status                  ----->   status change project
-git add -A                  ----->   اضافه بشه همه تغییرات به قسمت صحنه یا استیج
-git add -all                ----->   اضافه بشه همه تغییرات به قسمت صحنه یا استیج
-git commit -m "text"        ----->   بعد مرحله (ادد) میایم اضافه میکنیم به (کامیت) و (مسیج) یا پیام مینویسیم توضیحات در مورد تغییرات
-git diff Head               ----->   تغییراتی که تو پروژه بوده نمایش میده   |   q خارج شدن از ترمینال   |  ctr + e  خط پایانی
-git restore  index.html     ----->   برای اینککه تغییرات به حالت قبل برگرده
-git checkout index.html     ----->   برای اینککه تغییرات به حالت قبل برگرده
+cd..                               ----->   back
+ls                                 ----->   list
+ls -a                              ----->   list all
+ls -ah                             ----->   list all & hiiden
+git status                         ----->   status change project
+git add -A                         ----->   اضافه بشه همه تغییرات به قسمت صحنه یا استیج
+git add -all                       ----->   اضافه بشه همه تغییرات به قسمت صحنه یا استیج
+git commit -m "text"               ----->   بعد مرحله (ادد) میایم اضافه میکنیم به (کامیت) و (مسیج) یا پیام مینویسیم توضیحات در مورد تغییرات
+git diff Head                      ----->   تغییراتی که تو پروژه بوده نمایش میده   |   q خارج شدن از ترمینال   |  ctr + e  خط پایانی
+git restore index.html             ----->   برای این که تغییرات به حالت قبل برگرده
+git checkout index.html            ----->   برای اینککه تغییرات به حالت قبل برگرده
+git reset index.html               ----->   برای این که تغییرات به حالت قبل (استیج) برگرده   |  stage برای این مرحله
+git restore --staged index.html    ----->   برای این که تغییرات به حالت قبل (استیج) برگرده   |  stage برای این مرحله
+
+git log                            ----->   برای دیدن تمامی تغییرات به صورت کلی مثل اسم نویسنده و زمان و تاریخ و متن پیام (کامیت) یا مسیج
+git branch                         ----->   شاخه ها و مسیر هایی که وجود داره نمایش میده مثل مستر یا فرانت
+git branch database                ----->   ساختن یک شاخه یا مسیر جدید برای پروژه مثل بک اند یا دیتابیس
+git checkout front OR master       ----->   برای تغییر دادن و سوییچ کردن به یک شاخه جدید دیگه ای
+git merge front                    ----->   merge به معنی ادغام کردن برای وصل کردن شاخه ها به یکدیگر مثل مستر و فرانت یا بک اند
+
 git clone https://github.com/mahdi99k/shoping.git   --->  یک حالت دانلود که ممکن همه فایل ها نیاد | یک حالت کلون که آدرس برمیداری این کد (گیت کلون) اولش میزنی
 --------------------------------------------------------------------------
 */
 
 
 /* Route Website */
-Route::get("/", [IndexController::class, "index"])->name('index');
+Route::prefix('')->group(function () {
+
+    Route::get("/", [IndexController::class, "index"])->name('index');
+    Route::get('/productDetails/{product}', [ClientProductController::class, "show"])->name('productDetails.show');
+
+});
 /* End Route Website */
 
 
@@ -128,8 +144,9 @@ Route::prefix('adminPanel')->group(function () {
 
     Route::resource("/", PanelController::class);
     Route::resource("/category", CategoryController::class)->parameters(['category' => 'id']);
-    Route::resource("/brands" , BrandController::class)->parameters(['brands' => 'id']);
-    Route::resource('/product' , ProductController::class)->parameters(['product' => 'id']);
+    Route::resource("/brands", BrandController::class)->parameters(['brands' => 'id']);
+    Route::resource('/product', ProductController::class)->parameters(['product' => 'id']);
+    Route::resource('/product.gallery' , GalleryController::class)->parameters(['product.gallery' => 'id']);  // ساخت پارامتر برای محصول و گالری با نقطه
 
 });
 /* End Route BackEnd */
@@ -140,7 +157,9 @@ Route::prefix('adminPanel')->group(function () {
 
 
 
-// ---------------------------------- Laravel Shop  Lesson 22        06 : 40 (+1)    ------------------------------------
+// TODO product->index.blade.php   $product(update,delete) slug cgange id  AND do problem
+
+// ---------------------------------- Laravel Shop  Lesson 35        00 : 00 (+2)    ------------------------------------
 
 
 // Login = email : mahdishmshm13781999@gmail.com     password = ~(W6pvO6*Mahdi99K*1JC2^E42WT5
@@ -2088,8 +2107,6 @@ if ($user->can('delete', $postData)) {
 
 
 
-
-
 //-------------------------------------------------------------------   Api Json   *********************
 
 let data = {
@@ -2176,10 +2193,109 @@ Route::middleware('auth')->prefix('administrator/panel')->group(function () {
 / *-----  End Route BackEnd  -----* /
 
 
+//------------------------------------------------- global variable  متغیر های سراسری
+
+public function boot()    // execute code
+{
+    // معرفی میکنیم (ویو) سایت یا ظاهر سایت کد های (بلید) که به صورت کلی از این جا (کامپکت) بشه و نخواهیم هر سری کد بنویسیم و برای تغییر دادن از این قسمت فقط انجام بدیم
+    view()->composer(['client.index', 'client.products.show'], function ($view) {
+        $view->with([
+            'categories' => Category::query()->where('parent_id', '=', null)->get(),
+            'brands' => Brand::all(),
+        ]);
+    });
+
+
+    Paginator::useBootstrap();   // show bootsrap paginate
+}
+
+
+//---------------------------------------------------  Controller & Model Gallery
+
+
+class GalleryController extends Controller
+{
+
+
+    public function index(Product $product)
+    {
+        return view('admin.galleries.index', [
+            'product' => $product,
+            'galleies' => Gallery::all(),
+        ]);
+    }
+
+
+
+    public function store(ProductGalleryRequest $request, Product $product)
+    {
+//      $product->addGallery($request);
+
+        $file = $request->file('file');
+        $path = $file->storeAs('public/productGallery', $file->getClientOriginalName());
+
+        $product->galleies()->create([
+            'product_id' => $product->id,
+            'path' => $path,
+            'mimes' => $file->getClientMimeType(),   // show type image
+        ]);
+    }
+
+
+    public function destroy(Product $product, Gallery $gallery)
+    {
+//      dd($product->galleies());
+
+        $product->deleteGallery($gallery);
+        return back()->with('delete', 'عکس گالری محصول با موفقیت حذف شد');
+    }
+
+
+
+    //-----------------------------  Model gallery
+
+
+
+    public function product()  // مفرد اسم
+    {
+        return $this->belongsTo(Product::class , 'product_id');   // هر محصول میتونه چندین تا گالری یا عکس داشته باشه | متعلق به محصول
+    }
+
+   //------------------------- Model Products  --> Gallery
+
+
+    public function getRouteKeyName()    // getRouteKeyName | میتونه براس ستون های درون جدول یمقدار بگیره به کل این مادل بده
+    {
+        return 'slug';  // تو کا پروژه قرار میگیره
+    }
+
+
+    / *
+     public function addGallery(Request $request)
+    {
+        $file = $request->file('file');
+        $path = $file->storeAs('public/productGallery' , $file->getClientOriginalName());
+
+        $this->galleies()->create([
+            'product_id' => $this->id,
+            'path' => $path,
+            'mimes' => $file->getClientMimeType(),   // show type image
+        ]);
+    }* /
+
+
+    public function deleteGallery(Gallery $gallery)
+    {
+        Storage::delete($gallery->path);  // unlink | میاد عکس حذف میکنه
+        $gallery->delete();
+    }
+
+
+}
+
+
+
+
+
 */
-
-
-
-
-
 

@@ -6,7 +6,7 @@
                     <h5>درباره مارکت شاپ</h5>
                     <p>قالب HTML فروشگاهی مارکت شاپ. این یک بلاک مدیریت محتواست. شما میتوانید هر نوع محتوای html
                         نوشتاری یا تصویری را در آن قرار دهید.</p>
-                    <img alt="" src="client/image/logo-small.png">
+                    <img alt="" src="/client/image/logo-small.png">
                 </div>
                 <div class="column col-lg-2 col-md-2 col-sm-3 col-xs-12">
                     <h5>اطلاعات</h5>
@@ -53,13 +53,13 @@
                     <p>کپی رایت © 2016 فروشگاه شما | پارسی سازی و ویرایش توسط <a href="http://onescript.ir" target="_blank">وان اسکریپت</a></p>
                 </div>
                 <div class="social pull-right flip"><a href="#" target="_blank">
-                        <img data-toggle="tooltip" src="client/image/socialicons/facebook.png" alt="Facebook" title="Facebook"></a> <a
+                        <img data-toggle="tooltip" src="/client/image/socialicons/facebook.png" alt="Facebook" title="Facebook"></a> <a
                         href="#" target="_blank">
-                        <img data-toggle="tooltip" src="client/image/socialicons/twitter.png" alt="Twitter" title="Twitter"> </a> <a href="#" target="_blank"> <img
-                            data-toggle="tooltip" src="client/image/socialicons/google_plus.png" alt="Google+"
+                        <img data-toggle="tooltip" src="/client/image/socialicons/twitter.png" alt="Twitter" title="Twitter"> </a> <a href="#" target="_blank"> <img
+                            data-toggle="tooltip" src="/client/image/socialicons/google_plus.png" alt="Google+"
                             title="Google+"> </a> <a href="#" target="_blank">
-                        <img data-toggle="tooltip" src="client/image/socialicons/pinterest.png" alt="Pinterest" title="Pinterest"> </a> <a
-                        href="#" target="_blank"> <img data-toggle="tooltip" src="client/image/socialicons/rss.png" alt="RSS" title="RSS"> </a></div>
+                        <img data-toggle="tooltip" src="/client/image/socialicons/pinterest.png" alt="Pinterest" title="Pinterest"> </a> <a
+                        href="#" target="_blank"> <img data-toggle="tooltip" src="/client/image/socialicons/rss.png" alt="RSS" title="RSS"> </a></div>
             </div>
             <div class="bottom-row">
                 <div class="custom-text text-center">
@@ -68,20 +68,20 @@
                         گرافیک است.</p>
                 </div>
                 <div class="payments_types"><a href="#" target="_blank"> <img data-toggle="tooltip"
-                                                                              src="client/image/payment/payment_paypal.png"
+                                                                              src="/client/image/payment/payment_paypal.png"
                                                                               alt="paypal" title="PayPal"></a> <a
                         href="#" target="_blank"> <img data-toggle="tooltip"
-                                                       src="client/image/payment/payment_american.png"
+                                                       src="/client/image/payment/payment_american.png"
                                                        alt="american-express" title="American Express"></a> <a
                         href="#" target="_blank"> <img data-toggle="tooltip"
-                                                       src="client/image/payment/payment_2checkout.png" alt="2checkout"
+                                                       src="/client/image/payment/payment_2checkout.png" alt="2checkout"
                                                        title="2checkout"></a> <a href="#" target="_blank"> <img
-                            data-toggle="tooltip" src="client/image/payment/payment_maestro.png" alt="maestro"
+                            data-toggle="tooltip" src="/client/image/payment/payment_maestro.png" alt="maestro"
                             title="Maestro"></a> <a href="#" target="_blank"> <img data-toggle="tooltip"
-                                                                                   src="client/image/payment/payment_discover.png"
+                                                                                   src="/client/image/payment/payment_discover.png"
                                                                                    alt="discover" title="Discover"></a>
                     <a href="#" target="_blank"> <img data-toggle="tooltip"
-                                                      src="client/image/payment/payment_mastercard.png" alt="mastercard"
+                                                      src="/client/image/payment/payment_mastercard.png" alt="mastercard"
                                                       title="MasterCard"></a></div>
             </div>
         </div>

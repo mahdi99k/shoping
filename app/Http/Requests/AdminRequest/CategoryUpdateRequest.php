@@ -9,13 +9,13 @@ class CategoryUpdateRequest extends FormRequest
 
     public function authorize()
     {
-        return true;           // user must first loggin Go show validate
+        return true;     // user must first loggin Go show validate
     }
 
     public function rules()
     {
         return [
-            'title_fa' => 'required|unique:categories,title_fa|string',
+            'title_fa' => 'required|string',
             'title_en' => 'nullable|string',
             'parent_id' => 'nullable|string',
         ];

@@ -15,8 +15,8 @@
                                         <table>
                                             <tbody>
                                             <tr>
-                                                <td><img alt="" src="clienr/image/banner/cms-block.jpg"></td>
-                                                <td><img alt="" src="client/image/banner/responsive.jpg"></td>
+                                                <td><img alt="" src="/client/image/banner/cms-block.jpg"></td>
+                                                <td><img alt="" src="/client/image/banner/responsive.jpg"></td>
                                             </tr>
                                             <tr>
                                                 <td><h4>بلاک های محتوا</h4></td>
@@ -46,17 +46,17 @@
                 </div>
                 <div id="language" class="btn-group">
                     <button class="btn-link dropdown-toggle" data-toggle="dropdown"><span>
-                                    <img src="client/image/flags/gb.png" alt="انگلیسی" title="انگلیسی">انگلیسی <i
+                                    <img src="/client/image/flags/gb.png" alt="انگلیسی" title="انگلیسی">انگلیسی <i
                                 class="fa fa-caret-down"></i></span></button>
                     <ul class="dropdown-menu">
                         <li>
                             <button class="btn btn-link btn-block language-select" type="button" name="GB"><img
-                                    src="client/image/flags/gb.png" alt="انگلیسی" title="انگلیسی"/> انگلیسی
+                                    src="/client/image/flags/gb.png" alt="انگلیسی" title="انگلیسی"/> انگلیسی
                             </button>
                         </li>
                         <li>
                             <button class="btn btn-link btn-block language-select" type="button" name="GB"><img
-                                    src="client/image/flags/ar.png" alt="عربی" title="عربی"/> عربی
+                                    src="/client/image/flags/ar.png" alt="عربی" title="عربی"/> عربی
                             </button>
                         </li>
                     </ul>

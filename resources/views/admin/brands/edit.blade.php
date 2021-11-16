@@ -15,7 +15,7 @@
             <input type="file" name="image" id="image" class="text"/>
             <div style="text-align: center">
            <img src="{{ asset('./' . str_replace('public/image-brands/' , 'storage/image-brands/' , $brand->image)) }}"
-                width="100" height="100" alt="{{ $brand->name }}">
+                width="90" height="90" alt="{{ $brand->name }}">
             </div>
 
             <button class="btn btn-brand">به روزسانی</button>

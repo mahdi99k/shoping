@@ -59,7 +59,7 @@ class BrandController extends Controller
         $brand = Brand::query()->findOrFail($id);
         $path = $brand->image;      // بیا عکس خالی بود عکس قبلی بگیر
 
-        if ($request->hasFile('image')) {                      // اگر عکسی وجود داشت
+        if ($request->hasFile('image')) {                      // اگر عکسی وجود داشت | file_exists
             unlink(str_replace('public/image-brands', 'storage/image-brands', $brand->image));
             $path = $request->file('image')->storeAs(
                 'public/image-brands', $request->file('image')->getClientOriginalName()
