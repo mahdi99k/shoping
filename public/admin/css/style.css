@@ -998,6 +998,7 @@ textarea {
     font-size: 18px;
     font-weight: bold;
     color: #E57373;
+    cursor: pointer;
 }
 
 .item-reject:before {
@@ -1016,6 +1017,7 @@ textarea {
     content: '\e065';
     font-size: 14px;
     color: #FF8F00;
+    cursor: pointer;
 }
 
 /*   style button me   */
@@ -1036,7 +1038,7 @@ textarea {
 
 .btnSuccess:hover {
     background-color: #099d80;
-    color: whitesmoke;
+    color: #E0F2F1;
 }
 
 .btnSuccess:hover {
@@ -1059,7 +1061,7 @@ textarea {
 
 .btnDanger:hover {
     background-color: #c9302c;
-    color: whitesmoke;
+    color: #FFEBEE;
 }
 
 .btnDanger:hover {
@@ -1070,7 +1072,30 @@ textarea {
     display: flex;
     justify-content: start;
     align-items: center;
-    flex-wrap: wrap;  /* بیان زیر هم نره اسکرول بخوره  */
+    flex-wrap: wrap; /* بیان زیر هم نره اسکرول بخوره  */
+}
+
+
+.btnWarning {
+    background-color: orange;
+    border: none;
+    color: whitesmoke;
+    padding: 4px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.btnWarning:hover {
+    background-color: #FB8C00;
+    color: #FFF8E1;
+}
+
+.btnWarning:hover {
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.24), 0 5px 15px 0 rgba(0, 0, 0, 0.19);
 }
 
 
@@ -1091,6 +1116,7 @@ textarea {
     content: '\e141';
     font-size: 18px;
     color: #536DFE;
+    cursor: pointer;
 }
 
 

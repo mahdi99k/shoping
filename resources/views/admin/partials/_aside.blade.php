@@ -16,6 +16,7 @@
         <li class="item-li i-categories is-active"><a href="{{ route('category.create') }}">دسته بندی ها</a></li>
         <li class="item-li i-banners"><a href="{{ route('brands.create') }}">برند ها</a></li>
         <li class="item-li i-slideshow"><a href="{{ route('product.create') }}">محصولات</a></li>
+        <li class="item-li i-user__inforamtion"><a href="{{ route('role.create') }}">نقش ها</a></li>
         {{--<li class="item-li i-slideshow"><a href="slideshow.html">اسلایدشو</a></li>
         <li class="item-li i-banners"><a href="">بنر ها</a></li>
         <li class="item-li i-articles"><a href="articles.html">مقالات</a></li>

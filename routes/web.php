@@ -3,9 +3,12 @@
 
 use App\Http\Controllers\AdminController\BrandController;
 use App\Http\Controllers\AdminController\CategoryController;
+use App\Http\Controllers\AdminController\DiscoutController;
 use App\Http\Controllers\AdminController\GalleryController;
 use App\Http\Controllers\AdminController\PanelController;
 use App\Http\Controllers\AdminController\ProductController;
+use App\Http\Controllers\AdminController\RoleController;
+use App\Http\Controllers\AdminController\UserController;
 use App\Http\Controllers\ClientController\ProductController as ClientProductController;
 use App\Http\Controllers\ClientController\IndexController;
 use Illuminate\Support\Facades\Route;
@@ -29,15 +32,20 @@ use Illuminate\Support\Facades\Route;
  *migrate    --->  php artisan migrate             (create migrate table)
  *migrate    --->  php artisan migrate:status      (show table)
  *migrate    --->  php artisan migrate:rollback   (--step=2)
+ **migrate   --->  php artisan make:migration add_role_to_user
+ **migrate   --->  php artisan make:migration add_role_to_users             // رابطه بین دو تا جدول که فاصله دارن مثل یوزر و رول
 --------------------------------------------------------------------------
 --------------------------------------------------------------------------
  *request   --->  php artisan make:request createSliderRequest   (name) OR updateSliderRequest
- *request   --->  php artisan make:request AdminRequest\SliderCreateRequest   (name) OR SliderUpdateRequest *webamooz*
+ **request   --->  php artisan make:request AdminRequest\SliderCreateRequest   (name) OR SliderUpdateRequest *webamooz*
 --------------------------------------------------------------------------
 --------------------------------------------------------------------------
  *seedet    --->  php artisan make:seeder SliderTableSeeder
+ **seedet   --->  php artisan make:seeder PermissionSeeder
+ **migrate   --->  php artisan migrate --seed                           // جدول همراه سییدر ساخته میشه
+ **migrate   --->  php artisan migrate:fresh --seed                       // جدول همراه سییدر ساخته میشه و پاک میشه کل دیتا دوباره ساخته میشه
  *seed      --->  php artisan db:seed  --class=SliderTableSeeder  (--class) Seed the database with fill records
- *seed      --->  php artisan db:seed  //وقتی که سییدر نداریم و فکتوری کافی و میش از طریق دیتابیس سییدر و با اسم مادل دیتا فیک بسازیم و تو فراخوانی اسم مادل نمیاریم مثل این کد
+ *seed      --->  php artisan db:seed //وقتی که سییدر نداریم و فکتوری کافی و میش از طریق دیتابیس سییدر و با اسم مادل دیتا فیک بسازیم و تو فراخوانی اسم مادل نمیاریم مثل این کد
 --------------------------------------------------------------------------
 --------------------------------------------------------------------------
  *factory   --->  php artisan make:factory --model=Slider   (mame)  خودش فکتوری اضافه می کنه
@@ -120,9 +128,10 @@ git restore --staged index.html    ----->   برای این که تغییرات 
 
 git log                            ----->   برای دیدن تمامی تغییرات به صورت کلی مثل اسم نویسنده و زمان و تاریخ و متن پیام (کامیت) یا مسیج
 git branch                         ----->   شاخه ها و مسیر هایی که وجود داره نمایش میده مثل مستر یا فرانت
-git branch database                ----->   ساختن یک شاخه یا مسیر جدید برای پروژه مثل بک اند یا دیتابیس
-git checkout front OR master       ----->   برای تغییر دادن و سوییچ کردن به یک شاخه جدید دیگه ای
-git merge front                    ----->   merge به معنی ادغام کردن برای وصل کردن شاخه ها به یکدیگر مثل مستر و فرانت یا بک اند
+git branch database                ----->   ساختن یک شاخه یا مسیر جدید مثل فرانت یا دیتابیس
+git branch -d database             ----->   حذف یک شاخه یا مسیر جدید مثل فرانت یا دیتابیس
+git checkout front                 ----->   برای تغییر دادن و سوییچ کردن به یک شاخه جدید دیگه
+git merge front                    ----->   merge به معنی ادغام کردن برای وصل کردن شاخه ها به یکدیگر مثل مستر و فرانت
 
 git clone https://github.com/mahdi99k/shoping.git   --->  یک حالت دانلود که ممکن همه فایل ها نیاد | یک حالت کلون که آدرس برمیداری این کد (گیت کلون) اولش میزنی
 --------------------------------------------------------------------------
@@ -146,7 +155,10 @@ Route::prefix('adminPanel')->group(function () {
     Route::resource("/category", CategoryController::class)->parameters(['category' => 'id']);
     Route::resource("/brands", BrandController::class)->parameters(['brands' => 'id']);
     Route::resource('/product', ProductController::class)->parameters(['product' => 'id']);
-    Route::resource('/product.gallery' , GalleryController::class)->parameters(['product.gallery' => 'id']);  // ساخت پارامتر برای محصول و گالری با نقطه
+    Route::resource('/product.gallery', GalleryController::class);  // ساخت پارامتر برای محصول و گالری با نقطه
+    Route::resource('/product.discount', DiscoutController::class);
+    Route::resource('/role', RoleController::class)->parameters(['role' => 'id']);
+    Route::resource('/user' , UserController::class)->parameters(['user' => 'id']);
 
 });
 /* End Route BackEnd */
@@ -157,13 +169,18 @@ Route::prefix('adminPanel')->group(function () {
 
 
 
+
+
+
 // TODO product->index.blade.php   $product(update,delete) slug cgange id  AND do problem
 
-// ---------------------------------- Laravel Shop  Lesson 35        00 : 00 (+2)    ------------------------------------
+// ---------------------------------- Laravel Shop  Lesson 49         06 : 30 (+1)    ------------------------------------
 
 
-// Login = email : mahdishmshm13781999@gmail.com     password = ~(W6pvO6*Mahdi99K*1JC2^E42WT5
+// Login email  = mahdishmshm13781999@gmail.com   password = ~(W6pvO6*Mahdi99K*1JC2^E42WT5
 // GitHub email = mahdishmshm13781999@gmail.com   password = Mahdi1378@*99K
+// Login shop   = mahdishmshm13781999@gmail.com   password = mahdi1378
+
 
 //Auth::routes(['register' => false]);     // ریجستر یا ثبت نام غیر فعال می کنه=
 // laravel mix  :  package frontEnd  ,  mix file (js,less.sass,css , vue , react all.txt file asset  mixture save in folder public)
@@ -1897,7 +1914,7 @@ Route::get('/slider', function () {
 
 });
 
-//------------------------------------------------------------- auth  download
+//========================================================================================== auth  download
 @auth
      <a href="{{ asset('images/wallpaper/desktop-1.jpg') }}" download="download" class="btn btn-primary text-capitalize mr-5">download</a>
      <img src="{{ asset('images/wallpaper/desktop-1.jpg') }}" alt="image" width="250" height="250">
@@ -1919,7 +1936,7 @@ Route::get('/slider', function () {
 
 
 
-//------------------------------------------------------------- access سطح دسترسی  filter فیلتر کردن
+//========================================================================================== access سطح دسترسی  filter فیلتر کردن
 
 
 //--------------------- migration
@@ -1970,7 +1987,7 @@ public function posts()
 @endforelse
 
 
-//-------------------------------------------------------------------   access  Gate::allow   *********************
+//=========================================================================================  access  Gate::allow   *********************
 
 //-------------------------  AuthServiceProvider
 public function boot()
@@ -2107,7 +2124,7 @@ if ($user->can('delete', $postData)) {
 
 
 
-//-------------------------------------------------------------------   Api Json   *********************
+//==========================================================================================   Api Json   *********************
 
 let data = {
    firstName: "mahdi",
@@ -2130,7 +2147,7 @@ console.log(changeData.degree[1])
 console.log(changeData.employee.address)
 
 
-//-------------------------------------------------------------------    Project    *********************
+//==========================================================================================   Project    *********************
 
 <td>
    {!! Form::open(['route' => ['parallax.edit' , $item->id] , 'method' => 'get']) !!}
@@ -2159,7 +2176,7 @@ console.log(changeData.employee.address)
 
 
 
-//---------------------------------------------------------------------------------------------------------------------
+//======================================================================================================================
 
 Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);  / * reset = forget password * /
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -2210,7 +2227,7 @@ public function boot()    // execute code
 }
 
 
-//---------------------------------------------------  Controller & Model Gallery
+//========================================================================================== Controller & Model Gallery
 
 
 class GalleryController extends Controller
@@ -2296,6 +2313,452 @@ class GalleryController extends Controller
 
 
 
+//==========================================================================================  Discount تخفیف
+
+//----------------------------- model Discount -----------------------------
+
+public function addDiscount(Request $request)
+{
+
+    if (!$this->discount()->exists()) {  / * تخفیفی وجود نداشت | discount() یک کوعری زدیم تا مقداری اضافه بشه * /
+        $this->discount()->create([
+            'product_id' => $this->id,
+            'value' => $request->get('value'),
+        ]);
+    } else {                             / * اگر تخفیفی وجود داشت بیا آپدیت کن | بدون پرانتز میاد فقط یک رکورد از جدول در نظر میگیره ا اپدیت کنه discount * /
+        $this->discount->update([
+            'product_id' => $this->id,
+            'value' => $request->get('value'),
+        ]);
+    }
+
+}
+
+
+public function deleteDiscount(Discount $discount)
+{
+    $discount->delete();
+}
+
+
+public function updateDiscount(Request $request)
+{
+    $this->discount()->update([
+        'product_id' => $this->id,
+        'value' => $request->get('value'),
+    ]);
+}
+
+//----------------------------- request validation  -----------------------------
+
+'value' => 'required|integer|lte:1|gte:100',      //integer عدد صحیح  |  min:1|max:100  |  lte:1|gte:100  کم و زیاد عدد بهتر
+
+gt - greater than  | بزرگتر از
+gte - greater than equal to   |  بزرگتر  مساوی از
+lt - less than   |  کوچیکتر از
+lte - less than equal to   |  کوچیکتر مساوی از
+
+
+//----------------------------- Controller  -----------------------------
+
+class DiscoutController extends Controller
+{
+
+    public function create(Product $product)
+    {
+        return view('admin.discounts.create', [
+            'product' => $product,
+        ]);
+    }
+
+
+    public function store(Product $product, DiscountRequest $request)
+    {
+//      $product->addDiscount($request);
+
+
+        if (!$product->discount()->exists()) {    // تخفیفی وجود نداشت | discount() یک کوئری زدیم تا مقداری اضافه بشه
+
+            $product->discount()->create([
+                'product_id' => $product->id,
+                'value' => $request->get('value'),
+            ]);
+
+        } else {                           // اگر تخفیفی وجود داشت بیا آپدیت کن | بدون پرانتز میاد فقط یک رکورد از جدول در نظر میگیره آاپدیت کنه discount
+            $product->discount->update([
+                'product_id' => $product->id,
+                'value' => $request->get('value'),
+            ]);
+        }
+        return redirect(route('product.create'))->with('success', 'تخفیف محصول با موفقیت انجام شد');
+    }
+
+
+
+    public function edit(Product $product, Discount $discount)
+    {
+        return view('admin.discounts.edit', [
+            'product' => $product,
+            'discount' => $discount,
+        ]);
+    }
+
+
+    public function update(Product $product, Request $request)
+    {
+//      $product->updateDiscount($request);
+        $product->discount()->update([
+            'product_id' => $product->id,
+            'value' => $request->get('value'),
+        ]);
+        return redirect(route('product.create'));
+    }
+
+
+    public function destroy(Product $product, Discount $discount)
+    {
+        $product->deleteDiscount($discount);
+        return redirect(route('product.create'))->with('deleteDiscount', 'تخفیف محصول با موفقیت حذف شد');
+    }
+
+
+}
+
+
+//========================================================================================== Accessors & Mutators فید های مجازی
+//--------------------------- Model Product
+public function getPriceWithDiscountAttribute()      // محابسه تخفیف قسمت محصولات | اضافه کردن اول گت آخرش اتریبیوت فیلد مجازی استفاده کنیم
+{
+    if (!$this->discount()->exists()) {    // اگر تخفیفی وجود نداشت قیمت اصلی نمایش بده
+        return $this->price;
+    }
+
+    //اول قیمت محصول صد هزار ضرب در مثلا (10%) میشه بعد جواب تقسیم بر (صد) میشه که قیمت تخفیفی بدست میاد بعد از (قیمت محصول اولیه صد تومن کم) میشه که جواب تخفیف قیمت 10 هزار
+    return $this->price - $this->price * $this->discount->value / 100;   // الگوریتم تخفیف قیمت
+}
+
+
+//-------------------- showBlade front    -- > price_with_discount  حروف کوچک و آندرلاین
+ <span itemprop="price"> {{ number_format($product->price_with_discount) }} تومان
+
+
+//-------------------- index.blade  front    -- > price_with_discount
+<span class="price-new">{{ number_format($product->price_with_discount) }} تومان </span>
+
+
+
+
+//----------------------------------------------  Model Product  -- > has_discount  حروف کوچک و آندرلاین
+
+    public function getHasDiscountAttribute()  // آیا تخفیفی وجود دارد
+{
+    return $this->discount()->exists();
+}
+
+//------------------------- show and index
+    @if ($product->has_discount);
+
+
+//----------------------------------------------- Model Product
+
+    public function getDiscountValueAttribute()    // مقدار تخفیف چند درصد
+{
+    if ($this->has_discount) {
+        return $this->discount->value;
+    }
+    return null;
+}
+
+//------------------------- product.index and index
+    <a href="" class="btnWarning">{{ $product->discount_value . '%'}}</a>
+
+    <span class="saving">{{ $product->discount_value . '%' }}</span>
+
+
+
+//========================================================================================== seeder
+
+public function run()
+{
+
+    // categoried permissions
+    Permission::query()->insert([
+        [
+            'title' => 'create-category',
+            'label' => 'ایجاد دسته بندی',
+        ],
+
+        [
+            'title' => 'read-category',
+            'label' => 'مشاهده دسته بندی',
+        ],
+
+        [
+            'title' => 'update-category',
+            'label' => 'ویرایش دسته بندی',
+        ],
+
+        [
+            'title' => 'delete-category',
+            'label' => 'حذف دسته بندی',
+        ],
+    ]);
+
+}
+
+//----------------- DatabaseSeeder
+public function run()
+{
+    // \App\Models\User::factory(10)->create();
+    $this->call([                                   // سییدر هایی که ساختیم پاس میدیم به این قسمت اصلی که تو جدول ما ببره | call صدا زدن سییدر
+        PermissionSeeder::class,
+        RoleSeeder::class,
+    ]);
+
+
+
+}
+
+
+//========================================================================================== permissions $ roles
+//---------------------- category permission
+public function up()
+{
+    Schema::create('permissions', function (Blueprint $table) {
+        $table->id();
+        $table->string('title')->unique();         // create_category  مجوز دسترسی به
+        $table->string('label')->unique();         // ایجاد دسته بندی
+        $table->timestamps();
+    });
+}
+
+//---------------------- category roles
+public function up()
+{
+    Schema::create('roles', function (Blueprint $table) {
+        $table->id();
+        $table->string('title');   // نباید منحصر به فرد باشد زیرا ممکن دو سه تا کاربر نقش ادمین معمولی داشته باشند
+        $table->timestamps();
+    });
+}
+
+//---------------------- category permission_role
+public function up()
+{
+    Schema::create('permission_role', function (Blueprint $table) {
+        $table->foreignId('permission_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+        $table->foreignId('role_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+        $table->primary(['permission_id' , 'role_id']);       // کلید های هر جدول که بیاد منحصر به فرد بسازه
+        $table->timestamps();
+    });
+
+
+
+    //---------------------- sseder (PermissionSeeder) برای بقیه به همین شکل برند ها و دسته بندی و گالری و تخفیف اعدادی و تخفیف محصولات و نقش ها یا رول
+
+    // categoried permissions
+    Permission::query()->insert([
+        [
+            'title' => 'create-category',
+            'label' => 'ایجاد دسته بندی',
+        ],
+
+        [
+            'title' => 'read-category',
+            'label' => 'مشاهده دسته بندی',
+        ],
+
+        [
+            'title' => 'update-category',
+            'label' => 'ویرایش دسته بندی',
+        ],
+
+        [
+            'title' => 'delete-category',
+            'label' => 'حذف دسته بندی',
+        ],
+    ]);
+
+    // dashboard permissions | Dashboard Panel Manager
+    Permission::query()->insert([
+        [
+            'title' => 'view-dashboard',
+            'label' => 'مشاهده داشبورد',
+        ]
+    ]);
+
+    //---------------------- sseder (RoleSeeder)    نقش ها مثل سوپر ادمین یا کاربر عادی
+
+    // super-admin roles  |  create  (created_at  updated_at is full)
+    $superAdmin = Role::query()->create([
+        'title' => 'super-admin',
+    ]);
+
+
+    // normal-user  |  insert  (created_at  updated_at is null)
+    Role::query()->insert([
+        'title' => 'normal-user',
+    ]);
+
+    $superAdmin->permissions()->attach(Permission::all());  // بیا اضافه کن هرچی پرمیژن یا مجوز که وجود داره دسترسی دارد به سوپر ادمین بده
+
+
+//------------------------ Model Role    نقش ها (سوپر ادمنی) متلق به کلی مجوز دسترسی مثل دسته بندی و برند ها و محصولات (عملیات کراد)
+
+    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class);   // نقش ها (سوپر ادمنی) متلق به کلی مجوز دسترسی مثل دسته بندی و برند ها و محصولات (عملیات کراد)
+    }
+
+
+//----------------- DatabaseSeeder
+   public function run()
+   {
+    // \App\Models\User::factory(10)->create();
+    $this->call([                                   // سییدر هایی که ساختیم پاس میدیم به این قسمت اصلی که تو جدول ما ببره | call صدا زدن سییدر
+        PermissionSeeder::class,
+        RoleSeeder::class,
+    ]);
+
+
+
+
+//-------------------------- Request Role
+
+return [
+    'title' => 'required|string',   // exists:permissions, id | حتما آیدی جدول نقش ها با جدول مجوز دسترسی یکسان باشد و دستکاری نشده باشد
+    'permissions' => 'required|array|string|exists:permissions,id|unique:permissions,title',
+];
+
+//-------------------------- RoleController
+
+class RoleController extends Controller
+{
+
+
+    public function index()
+    {
+        //
+    }
+
+
+    public function create()
+    {
+        return view('admin.roles.index', [
+            'roles' => Role::paginate(10),
+            'permissions' => Permission::all(),
+        ]);
+    }
+
+
+    public function store(RoleRequest $request)
+    {
+        $role = Role::query()->create([
+            'title' => $request->get('title'),
+        ]);
+        $role->permissions()->attach($request->get('permissions'));    // پرمیژن ها اضافه مینکه درون نقش ها | permissions اسم اینپوت درون create نقش
+        return redirect(route('role.create'))->with('success', 'نقش با موفقیت افزوده شد');
+//      return redirect()->route('role.create');
+//      return redirect('role/create');
+//      return back();
+    }
+
+
+    public function show(Role $role)
+    {
+        //
+    }
+
+
+    public function edit($id)
+    {
+        $role = Role::query()->findOrFail($id);
+        return view('admin.roles.edit', [
+            'role' => $role,
+            'permissions' => Permission::all(),
+        ]);
+    }
+
+
+    public function update(RoleRequest $request, $id)
+    {
+        $role = Role::query()->findOrFail($id);
+        $role->update([
+            'title' => $request->get('title'),
+        ]);
+        $role->permissions()->sync($request->get('permissions'));
+        return redirect(route('role.create'))->with('update' , 'نقش با موفقیت به روزرسانی شد');
+    }
+
+
+    public function destroy($id)
+    {
+        $role = Role::query()->findOrFail($id);
+        $role->permissions()->detach();
+        $role->delete();
+        return back();
+//        return redirect(route('role.create'));
+
+    }
+
+
+}
+
+
+//-------------------------- Model Role
+class Role extends Model
+{
+    use HasFactory;
+    protected $guarded = ['id'];
+
+    public function permissions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class);   // نقش ها (سوپر ادمنی) متلق به کلی مجوز دسترسی مثل دسته بندی و برند ها و محصولات (عملیات کراد)
+    }
+
+    public function hasPermission($permission)   // اگر وجود داشت پرمیژن آیدی برابر آیدی نقش و بیا select حالت فعال
+    {
+        return $this->permissions()->where('id' , '=' , $permission->id )->exists();  // اگر آیدی نقش برابر پرمیژن باش و وجود داشت
+    }
+
+}
+
+
+//------------------------------- sleectAll & disableAll -- > radio
+//----------------- create.blade.php  (role)
+
+
+ <input type="checkbox" name="permissions[]" class="checkedAll" value="{{ $permission->id }}">  {{-- checkedAll فعال کردن همه یا برعکس --}}
+        <strong>{{ $permission->label }}</strong>{{--permissions[]به صورت آرایه--}}
+
+
+//--------------- partials.check.blade.php
+
+<script>
+
+    $(function () {
+
+        $('#selectAll').click(function () {   // اگر رو این اینپوت کلیک شد بیا ...
+            if ($(this).prop('checked')) {   // prop = بیا حالت فعال کردن دکمه اینپوت قرار بدهاگر کیک شد رو اینپوت غعال کردن همه
+                $('.checkedAll').prop('checked', true);
+                 $('#disableAll').prop('checked', false);  // ائن یکی اینپوت غیرفعال کن حالت رنگ آبی
+            }
+        })
+
+        $('#disableAll').click(function () {
+            if ($(this).prop('checked')) {   // prop = بیا حالت فعال کردن دکمه اینپوت قرار بدهاگر کیک شد رو اینپوت غعال کردن همه
+                $('.checkedAll').prop('checked', false);
+                $('#selectAll').prop('checked', false);
+            }
+        })
+
+    })
+
+</script>
+
+
+
+//==========================================================================================
+
 
 */
-

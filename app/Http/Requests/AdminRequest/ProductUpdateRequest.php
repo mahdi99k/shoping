@@ -19,7 +19,7 @@ class ProductUpdateRequest extends FormRequest
             'category_id' => 'required|exists:categories,id',             // exists:categories, id | حتما آیدی جدول دسته بندی ها با جدول محصولات یکسان باشد و دستکاری نشده باشد
             'brand_id' => 'required|exists:brands,id',
             'price' => 'required|integer|min:1000',                     // integer فقط عدد باشه
-            'slug' => 'required|alpha_dash',      // alpha_dash  =>  space is _ | جاهای خالی با _ جدا میکنه
+            'slug' => 'required|alpha_dash',                           // alpha_dash  =>  space is _ | جاهای خالی با _ جدا میکنه
             'description' => 'required|max:2000',
             'image' => 'nullable|image|mimes:png,PNG,jpg,jpeg,svg,mpeg|min:10|max:1024',   // nullable میتونه خالی باشه
         ];

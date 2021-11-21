@@ -1238,14 +1238,22 @@
                                 <div class="product-thumb">
 
                                     <div class="image"><a href="{{ route('productDetails.show' , $product) }}">  {{-- slug --}}
-                                            <img src="{{ str_replace('public/image-products' , 'storage/image-products' , $product->image) }}"
-                                                 alt="{{ $product->name }}" title="{{ $product->name }}" class="img-responsive"/></a>
+                                         <img src="{{ str_replace('public/image-products' , 'storage/image-products' , $product->image) }}"
+                                         alt="{{ $product->name }}" title="{{ $product->name }}" class="img-responsive"/></a>
                                     </div>
 
                                     <div class="caption">
 
                                         <h4><a href="{{ route('productDetails.show' , $product) }}">{{ $product->name }}</a></h4>  {{-- slug --}}
-                                        <p class="price"> {{ $product->price }} تومان </p>
+
+                                        <p class="price">
+                                            <span class="price-new">{{ number_format($product->price_with_discount) }} تومان </span>
+
+                                            @if ($product->has_discount)   {{-- اگر تخفیفی داشت این قسمت نمایش بده --}}
+                                                <span class="price-old">{{ number_format($product->price) }} تومان </span>
+                                                <span class="saving">{{ $product->discount_value . '%' }}</span>
+                                            @endif
+                                        </p>
 
                                         <div class="rating"><span class="fa fa-stack"><i
                                                class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span> <span

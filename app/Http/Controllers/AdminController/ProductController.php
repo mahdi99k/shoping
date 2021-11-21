@@ -25,7 +25,7 @@ class ProductController extends Controller
 //      $products = Product::all();                     // for one property is good
         return view('admin.products.index', [     //  for more than one property is good
 //          'products' => Product::withTrashed()->get(),
-            'products' => Product::paginate(8),
+            'products' => Product::paginate(7),
             'categories' => Category::all(),
             'brands' => Brand::all(),
         ]);

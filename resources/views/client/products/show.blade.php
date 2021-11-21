@@ -91,8 +91,16 @@
 
                                 <ul class="price-box">
                                     <li class="price" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-                                        <span class="price-old">12 میلیون تومان</span>
-                                        <span itemprop="price"> {{ $product->price }} تومان<span itemprop="availability" content="موجود"></span></span></li>
+
+                                        @if ($product->has_discount)   {{-- اگر تخفیفی داشت این قسمت نمایش بده --}}
+                                            <span class="price-old">{{ number_format($product->price) }} تومان</span> {{-- پول خط خورده قرمز --}}
+                                        @endif
+                                        <span itemprop="price"> {{ number_format($product->price_with_discount) }} تومان
+                                              <span itemprop="availability" content="موجود"></span>
+                                        </span>
+                                    </li>
+
+
                                     <li></li>
 
                                     <li>بدون مالیات : 9 میلیون تومان</li>
