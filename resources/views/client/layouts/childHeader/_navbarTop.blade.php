@@ -6,8 +6,15 @@
                 <div class="links">
                     <ul>
                         <li class="mobile"><i class="fa fa-phone"></i>+21 9898777656</li>
-                        <li class="email"><a href="mailto:info@marketshop.com"><i class="fa fa-envelope"></i>info@marketshop.com</a>
-                        </li>
+                        <li class="email"><a href="mailto:info@marketshop.com"><i class="fa fa-envelope"></i>info@marketshop.com</a></li>
+
+                        @auth
+                            <li class="wrap_custom_block">
+                                {{--  {{ auth()->user()->name }}   |  {{ auth()->user()->likes->count() }}  --}}
+                                <a href="{{ route('client.likes.wishList.index') }}" target="_blank">لیست علاقه مندی ها(
+                                    <span id="likes_count">{{ auth()->user()->likes->count() }}</span>)<b></b></a>
+                        @endauth
+
                         <li class="wrap_custom_block hidden-sm hidden-xs"><a>بلاک سفارشی<b></b></a>
                             <div class="dropdown-menu custom_block">
                                 <ul>
@@ -31,10 +38,8 @@
                                                 </td>
                                             </tr>
                                             <tr>
-                                                <td><strong><a class="btn btn-default btn-sm" href="#">ادامه
-                                                            مطلب</a></strong></td>
-                                                <td><strong><a class="btn btn-default btn-sm" href="#">ادامه
-                                                            مطلب</a></strong></td>
+                                                <td><strong><a class="btn btn-default btn-sm" href="#">ادامه مطلب</a></strong></td>
+                                                <td><strong><a class="btn btn-default btn-sm" href="#">ادامه مطلب</a></strong></td>
                                             </tr>
                                             </tbody>
                                         </table>
@@ -62,32 +67,40 @@
                     </ul>
                 </div>
                 <div id="currency" class="btn-group">
-                    <button class="btn-link dropdown-toggle" data-toggle="dropdown"><span> تومان <i
-                                class="fa fa-caret-down"></i></span></button>
+                    <button class="btn-link dropdown-toggle" data-toggle="dropdown"><span> تومان <i class="fa fa-caret-down"></i></span></button>
+
                     <ul class="dropdown-menu">
                         <li>
-                            <button class="currency-select btn btn-link btn-block" type="button" name="EUR">€
-                                Euro
-                            </button>
+                            <button class="currency-select btn btn-link btn-block" type="button" name="EUR">€ Euro</button>
                         </li>
                         <li>
-                            <button class="currency-select btn btn-link btn-block" type="button" name="GBP">£
-                                Pound Sterling
-                            </button>
+                            <button class="currency-select btn btn-link btn-block" type="button" name="GBP">£ Pound Sterling</button>
                         </li>
                         <li>
-                            <button class="currency-select btn btn-link btn-block" type="button" name="USD">$
-                                USD
-                            </button>
+                            <button class="currency-select btn btn-link btn-block" type="button" name="USD">$ USD</button>
                         </li>
                     </ul>
+
                 </div>
             </div>
             <div id="top-links" class="nav pull-right flip">
+
+                @auth
+
+                    <form action="{{ route('client.logout') }}" method="post">
+                        @csrf
+                        @method('delete')
+                        <input type="submit" name="logout" value="خروج" class="btn btn-danger"/>
+                    </form>
+
+                @else {{--  @guest() مهمان  --}}
+
                 <ul>
-                    <li><a href="login.html">ورود</a></li>
-                    <li><a href="register.html">ثبت نام</a></li>
+                    <li><a href="{{ route('client.register') }}" target="_blank">ورود | ثبت نام</a></li>
                 </ul>
+
+                @endauth
+
             </div>
         </div>
     </div>

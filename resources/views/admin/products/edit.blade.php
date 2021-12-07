@@ -13,7 +13,7 @@
         <form action="{{ route('product.update' , $product->id) }}" method="post" class="padding-30" enctype="multipart/form-data">
             @csrf
             @method('patch')
-            <input type="text" value="{{ $product->name }}" name="name" placeholder="نام محصول وارد نمایید" class="text"/>
+            <input type="text" value="{{ $product->name }}" name="name" placeholder="ویرایش نام محصول وارد نمایید" class="text"/>
 
             <label for="category">ویرایش دسته بندی محصول:</label>
             <select name="category_id">
@@ -31,11 +31,11 @@
                 @endforeach
             </select>
 
-            <input type="number" value="{{ $product->price }}" name="price" placeholder="قیمت محصول وارد نمایید" class="text"/>
+            <input type="number" value="{{ $product->price }}" name="price" placeholder="ویرایش قیمت محصول وارد نمایید" class="text"/>
 
-            <input type="text" value="{{ $product->slug }}" name="slug" placeholder="اسلاگ محصول وارد نمایید" class="text"/>
+            <input type="text" value="{{ $product->slug }}" name="slug" placeholder="ویرایش اسلاگ محصول وارد نمایید" class="text"/>
 
-            <textarea name="description" cols="30" rows="10" placeholder="توضیحات محصول وارد نمایید" style="height: 150px!important;">{{ $product->description }}</textarea>
+            <textarea name="description" cols="30" rows="10" placeholder="ویرایش توضیحات محصول وارد نمایید" style="height: 150px!important;">{{ $product->description }}</textarea>
 
             <label for="image">ویرایش تصویر محصول:</label>
             <input type="file" name="image" id="image" class="text"/>

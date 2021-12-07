@@ -19,6 +19,7 @@ class CategoryCreateRequest extends FormRequest
             'title_fa' => 'required|unique:categories,title_fa|string',
             'title_en' => 'unique:categories,title_en|nullable|string',
             'parent_id' => 'nullable|string',
+            'propertyGroup' => 'nullable|exists:property_groups,id',
         ];
     }
 

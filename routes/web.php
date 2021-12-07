@@ -4,13 +4,25 @@
 use App\Http\Controllers\AdminController\BrandController;
 use App\Http\Controllers\AdminController\CategoryController;
 use App\Http\Controllers\AdminController\DiscoutController;
+use App\Http\Controllers\AdminController\FeaturedCategoryController;
 use App\Http\Controllers\AdminController\GalleryController;
+use App\Http\Controllers\AdminController\OfferController;
 use App\Http\Controllers\AdminController\PanelController;
 use App\Http\Controllers\AdminController\ProductController;
+use App\Http\Controllers\AdminController\ProductPropertyController;
+use App\Http\Controllers\AdminController\PropertyController;
+use App\Http\Controllers\AdminController\PropertyGroupController;
 use App\Http\Controllers\AdminController\RoleController;
+use App\Http\Controllers\AdminController\SliderController;
 use App\Http\Controllers\AdminController\UserController;
+use App\Http\Controllers\ClientController\CardController;
+use App\Http\Controllers\ClientController\CommentController;
+use App\Http\Controllers\AdminController\CommentController as AdminCommentController;
+use App\Http\Controllers\ClientController\LikeController;
 use App\Http\Controllers\ClientController\ProductController as ClientProductController;
 use App\Http\Controllers\ClientController\IndexController;
+use App\Http\Controllers\ClientController\RegisterController;
+use App\Http\Middleware\CheckPermission;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -133,32 +145,81 @@ git branch -d database             ----->   حذف یک شاخه یا مسیر �
 git checkout front                 ----->   برای تغییر دادن و سوییچ کردن به یک شاخه جدید دیگه
 git merge front                    ----->   merge به معنی ادغام کردن برای وصل کردن شاخه ها به یکدیگر مثل مستر و فرانت
 
+Change Git                         ----->   git status  +  git add -A  +  git commit -m='add news and css'  +  git push -u origin master
+Change inside the Github           ----->   git pull origin master  تغیرراتی که با خود گیت هاب درون ادیتورش میدیم باید با این کد اضافه کنیم
+cat style.css                      ----->   show code inside project
+
 git clone https://github.com/mahdi99k/shoping.git   --->  یک حالت دانلود که ممکن همه فایل ها نیاد | یک حالت کلون که آدرس برمیداری این کد (گیت کلون) اولش میزنی
+
+ *observer  --->  php artisan make:observer CategoryObserver --model=Category
+
 --------------------------------------------------------------------------
 */
 
 
 /* Route Website */
-Route::prefix('')->group(function () {
+Route::prefix('')->name('client.')->group(function () {
 
-    Route::get("/", [IndexController::class, "index"])->name('index');
-    Route::get('/productDetails/{product}', [ClientProductController::class, "show"])->name('productDetails.show');
+    //product:
+    Route::get("/", [IndexController::class, "index"])->name('home');
+    Route::get('/productDetails/{product}', [ClientProductController::class, "show"])->name('productDetails.show'); /* صفحه تکی مشخصات محصول */
+    Route::post('/product/{product}/comments/store', [CommentController::class, "store"])->name('product.commects.store'); /* صفحه تکی مشخصات محصول */
+    Route::get('/likes/wishList', [LikeController::class, "index"])->name('likes.wishList.index');
+    Route::post('/likes/{product}', [LikeController::class, "store"])->name('likes.store');
+    Route::delete('/likes/{product}', [LikeController::class, "destroy"])->name('likes.destroy');
+
+    //register:
+    Route::get('/register', [RegisterController::class, "create"])->name('register');  /* صفحه ثبت نام */
+    Route::post('/register/sendmail', [RegisterController::class, "sendMail"])->name('register.sendmail'); /* مشخصات کاربر و ارسال کد به otp */
+    Route::get('/register/otp/{user}', [RegisterController::class, "otp"])->name('register.otp'); /* ارسال کد تایید به ایمیل */
+    Route::post('/register/verifiedOtp/{user}', [RegisterController::class, "verifiedOtp"])->name('register.verifiedOtp'); /* صفحه تایید ایمیل و لاگین شدن */
+    Route::delete('/logout', [RegisterController::class, "logout"])->name('logout');
+
+    //Cart:
+    Route::post('/card/{product}', [CardController::class, "store"])->name('card.store');
 
 });
 /* End Route Website */
 
 
+//**********************************************************************************************************************
+
+
 /* Route BackEnd */
-Route::prefix('adminPanel')->group(function () {
+Route::prefix('adminPanel')->middleware([/*CheckPermission::class . ':view-dashboard',*/ /*'auth'*/])->group(function () {
 
     Route::resource("/", PanelController::class);
     Route::resource("/category", CategoryController::class)->parameters(['category' => 'id']);
     Route::resource("/brands", BrandController::class)->parameters(['brands' => 'id']);
-    Route::resource('/product', ProductController::class)->parameters(['product' => 'id']);
+
+    //product:
+    Route::resource('/product', ProductController::class)/*->parameters(['product' => 'id'])*/
+    ;
     Route::resource('/product.gallery', GalleryController::class);  // ساخت پارامتر برای محصول و گالری با نقطه
     Route::resource('/product.discount', DiscoutController::class);
+    Route::resource('/offer', OfferController::class);
+    Route::resource('/slider', SliderController::class);
+    Route::get('/product/{product}/comments', [AdminCommentController::class, "index"])->name('product.comments.index');
+    Route::get('/product/{product}/comments/show', [AdminCommentController::class, "show"])->name('product.comments.show');
+    /*Route::get('/comments/{comment}/edit', [AdminCommentController::class, "edit"])->name('product.comments.edit');*/
+    Route::patch('/comments/{comment}/update', [AdminCommentController::class, "update"])->name('product.comments.update');
+    Route::delete('/comments/{comment}/destroy', [AdminCommentController::class, "destroy"])->name('product.comments.destroy');
+
+    //productProperty:
+    Route::get('/products/{product}/properties', [ProductPropertyController::class, "index"])->name('product.properties.index');
+    Route::get('/products/{product}/properties/create', [ProductPropertyController::class, "create"])->name('product.properties.create');
+    Route::post('/products/{product}/properties', [ProductPropertyController::class, "store"])->name('product.properties.store');
+
+    //productGroup_&_property:
+    Route::resource('/propertyGroup', PropertyGroupController::class)->parameters(['propertyGroup' => 'id']);  /* گروه مشخصات */
+    Route::resource('/properties', PropertyController::class)->parameters(['properties' => 'id']); /* زیرمجموعه گروه مشخصات */
+
     Route::resource('/role', RoleController::class)->parameters(['role' => 'id']);
-    Route::resource('/user' , UserController::class)->parameters(['user' => 'id']);
+    Route::resource('/user', UserController::class)->parameters(['user' => 'id']);
+
+    //Category
+    Route::get('/featuredCategory/create', [FeaturedCategoryController::class, "create"])->name('featuredCategory.create');
+    Route::post('/featuredCategory/store', [FeaturedCategoryController::class, "store"])->name('featuredCategory.store');
 
 });
 /* End Route BackEnd */
@@ -167,14 +228,10 @@ Route::prefix('adminPanel')->group(function () {
 
 
 
+// TODO Error Middreware ***********
+// TODO product->create.blade.php   $product(update,delete) slug cgange id  AND do problem
 
-
-
-
-
-// TODO product->index.blade.php   $product(update,delete) slug cgange id  AND do problem
-
-// ---------------------------------- Laravel Shop  Lesson 49         06 : 30 (+1)    ------------------------------------
+// ---------------------------------- Laravel Shop  Lesson 93 tomorrow 2 film          01 : 20 (+1)   ------------------------------------
 
 
 // Login email  = mahdishmshm13781999@gmail.com   password = ~(W6pvO6*Mahdi99K*1JC2^E42WT5
@@ -2019,7 +2076,7 @@ if ($user->can('update-post', $post)) {                 // can می تواند  
     return abort('403');  // forbidden  ممنوع
 }
 
-/*if (Gate::denies('update-post', $post)) {                 // denies   تکذیب می کند   |  برعکس allows
+/*if (Gate::denies('update-post', $post)) {                 // define   تکذیب می کند   |  برعکس allows
     return abort('403');  // forbidden  ممنوع
 }else {
     return view('post.edit' , compact('post'));
@@ -2758,7 +2815,741 @@ class Role extends Model
 
 
 
-//==========================================================================================
+//====================================================================================================== is-active sideMenu
+
+
+<li class="item-li i-users @if (request()->routeIs('user.create')) is-active @endif"><a href="{{ route('user.create') }}"> کاربران</a></li>
+
+<li class="item-li i-slideshow @if(request()->routeIs('product.create')) is-active @endif"><a href="{{ route('product.create') }}">محصولات</a></li>
+
+<li class="item-li i-user__inforamtion @if(request()->routeIs('role.create')) is-active @endif"><a href="{{ route('role.create') }}">نقش ها</a></li>
+
+// @if (request()->routeIs('user.create')) is-active @endif         // بیا درخواستی که دادم اگه مسیرش این بود اکتیو کن
+
+
+//====================================================================================================== email verified_at
+//------------------- change .env   (*change)
+MAIL_MAILER=smtp
+* MAIL_HOST=smtp.gmail.com
+* MAIL_PORT=587
+* MAIL_USERNAME=mahdishmshm13781999@gmail.com
+* MAIL_PASSWORD=m09398187800
+* MAIL_ENCRYPTION=tls  #security port
+MAIL_FROM_ADDRESS=null
+MAIL_FROM_NAME="${APP_NAME}"
+
+//------------- google gmail  less secure app access(امنیت کمتر ایمیل که لوکال هاست قبول کنه که باید بعدش آف کنیم)
+1) manager youre google account -> security -> less secure app access -> on
+
+//-------------  next finish after  بعد از پایان مرحله ارسال ایمیل میشه   (send mail)
+2)-------------  php artisan config:clear   کانفیک باید اول پاک کرد
+2)-------------  php artisan config:cache    بعد از کلیر میایم کانفیگ کچ میکنیم
+
+
+//====================================================================================================== email verified_at (send mail)
+
+1) ********** laravel -> the Basic -> mail -> Generating Mailables
+2) ********** php artisan make:mail OtpMail --name
+
+3) ********** create directory  app -> mail -> OtpMail.php
+
+class OtpMail extends Mailable
+{
+    use Queueable, SerializesModels;
+    public $otp;
+
+    public function __construct($otp)
+    {
+        return $this->otp = $otp;
+    }
+
+    public function build()
+    {
+        return $this->from('mahdishmshm13781999@gmail.com')->view('mail.otp');  // from برای چه کسی ایمیل تایید سایت ارسال بشه
+    }
+
+}
+
+
+4) ********** create blade html  ->  view('mail.otp)
+
+<body
+<h1>سلام</h1>
+<h3>به وب سایت فروشگاهی ما خوش آمدی</h3>
+
+<h3>کد تایید شما : {{ $otp }}</h3>  {{-- __construct otp get --}}
+</body>
+
+
+
+5) ********** RegisterController
+
+//----------- web.php
+Route::prefix('')->group(function () {
+
+    Route::get("/", [IndexController::class, "index"])->name('home');
+    Route::get('/productDetails/{product}', [ClientProductController::class, "show"])->name('productDetails.show'); / * صفحه تکی مشخصات محصول * /
+    Route::get('/register', [RegisterController::class, "create"])->name('register');  / * صفحه ثبت نام * /
+    Route::post('/register/sendmail', [RegisterController::class, "sendMail"])->name('register.sendmail'); / * ارسال کد به ایمیل * /
+    Route::get('/register/otp/{user}', [RegisterController::class, "otp"])->name('register.otp'); / * رفتن به صحه کد تایید زدن * /
+    Route::post('/register/verifiedOtp/{user}', [RegisterController::class, "verifiedOtp"])->name('register.verifiedOtp'); / * صفحه تایید ایمیل و لاگین شدن * /
+
+});
+
+//----------- RegisterController
+
+    public function sendMail(Request $request)
+    {
+        $this->validate($request, [
+            'email' => 'required|email|unique:users,email|max:255',
+        ]);
+
+  $otp = random_int(11111, 99999);
+
+        $userQuery = User::query()->where('email', $request->get('email'))->first(); // user email == email database
+        if ($userQuery->exists()) {
+            $user = $userQuery;
+            $user->update([                                            // اگر ایمیل وارد شده در دیتابیس مجود بود بیا رمز عبور آپدیت کن
+                'password' => bcrypt($otp),
+            ]);
+
+        } else {
+            $user = User::query()->create([
+                'name' => '',
+                'email' => $request->get('email'),
+                'password' => bcrypt($otp),  // hash security in database
+                'role_id' => Role::findByTitle('normal-user')->id, //هر گاربری ثبت نام میکنه پیش فرض نرمال یوزر
+            ]);
+        }
+
+
+        // send otp by email to user
+        Mail::to($user->email)->send(new OtpMail($otp));   // to بفرست برای ایمیل کاربر | send این کد 5 رقمی ارسال کن
+        return redirect(route('register.otp' , $user));   // route  1)address view   2)parameter
+    }
+
+
+
+    public function otp(User $user)
+    {
+        return view('client.register.verifiedOtp', [
+            'user' => $user,
+        ]);
+    }
+
+    public function verifiedOtp(Request $request, User $user)
+    {
+        $this->validate($request, [
+            'otp' => 'required|max:5|min:5|lte:99999|gte:11111',
+        ]);
+       // Hash::check بیا چک کن آیا عددی که هش شده مطابقه داره با رمز کاربری پسوورد
+        if (!Hash::check($request->get('otp'), $user->password)) {  // اگر مخالف هم بود پسوورد که هکون رمز تایید ایمیل با خود رمز تایید ایمیل
+            return back()->with('errorVerified' , 'کد وارد شده صحیح نمی باشد!!');
+        }
+
+        auth()->login($user);                    // کاربر لاگین میکنه
+        return redirect(route('home'))->with('loginVerified' ,"کاربر گرامی به وب سایت خوش آمدید");  // home page
+
+    }
+
+
+        //-------------------------- blade verified
+
+                <form class="form-horizontal" method="post" action="{{ route('register.verifiedOtp' , $user) }}">
+                    @csrf
+                    <fieldset id="account" style="margin-bottom: 20px;margin-top: 50px">
+                        <legend>کد ارسال شده به ایمیل خود را وارد نمایید</legend>
+                        @if (session('errorVerified'))
+                            <div class="text-danger margin-bottom-10">{{ session('errorVerified') }}</div>
+                        @endif
+                        @include('admin.partials._errors')
+
+                        <div class="form-group required">
+                            <label for="input-email" class="col-sm-2 control-label">کد تایید </label>
+                            <div class="col-sm-8">
+                                <input type="text" name="otp" minlength="5" maxlength="5" min="11111" max="99999" class="form-control"
+                                       id="input-email" placeholder="کد تایید را وارد نمایید"  style="border-radius: 3px"  />
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="buttons">
+                        <div class="pull-right">
+                            <input type="submit" class="btn btn-primary" value="تایید حساب کاربری" style="border-radius: 3px">
+                        </div>
+                    </div>
+
+                </form>
+
+
+
+
+//====================================================================================================== logout
+//--------------------- web.php
+Route::post('logout' , [RegisterController::class , "logout"])->name('logout');
+
+
+//---------------------  _navbarTop.blade.php
+@auth
+
+<form action="{{ route('logout') }}" method="post">
+     @csrf
+     @method('delete')
+     <input type="submit" name="logout" value="خروج" class="btn btn-sm btn-danger"/>
+</form>
+
+    @else {{--  @guest() مهمان  --}}
+
+    <ul>
+        <li><a href="{{ route('register') }}" target="_blank">ورود | ثبت نام</a></li>
+    </ul>
+
+@endauth
+
+//--------------------- RegisterController
+
+    public function logout()
+    {
+        auth()->logout();
+        return redirect(route('home'));
+    }
+
+
+
+
+//====================================================================================================== Middleware
+
+//----------------------------- web.php
+Route::prefix('adminPanel')->middleware(\App\Http\Middleware\CheckPermission::class . ':view-dashboard')->group(function () {
+
+//----------------------------- CheckPermission (middleware)
+
+    public function handle(Request $request, Closure $next, $permission)
+    {
+
+        if (!auth()->user()->role->hasPermission($permission)) {  // کاربری که لاگین کرده اگر نقشش برابر نبود خطا 403
+            abort(403);
+        }
+
+        return $next($request);  // برو مرحله بعدی انجام بده
+    }
+
+//----------------------------- PanelController
+
+    public function __construct()
+    {
+         $this->middleware(CheckPermission::class . ':view-dashboard')->only('index');  // فقط این متود اجرا شع که کل پنل
+    }
+
+
+
+//====================================================================================================== AuthServiceProvider Gate*
+
+public function boot()
+{
+    $this->registerPolicies();
+
+
+    Gate::define('view-dashboard', function (User $user) {   //define 1)do work  2)callback  | User $user laravel auto login
+        return $user->role->hasPermission('view-dashboard');
+    });
+
+    Gate::define('create-brand', function (User $user) {
+        return $user->role->hasPermission('create-brand');
+    });
+
+    Gate::define('create-category', function (User $user) {
+        return $user->role->hasPermission('create-category');
+    });
+
+}
+
+//-------------------- PanelController
+
+/ *if (!Gate::allows('view-dashboard')) {                       // allows اجازه می دهد گیت که تعریف کردیم اینجا اجرا کنیم |A) ability
+    abort(403);
+}* /
+return view('admin.index');
+
+
+if (Gate::denies('view-dashboard')) {                            // برعکس define
+    abort(403);
+}
+return view('admin.index');
+
+//--------------- CategoryController
+
+if (Gate::denies('create-category')) {                           // Gate::denies() برعکی اول خطا نمایش بعد حالت صحیح
+    abort(403);
+}
+return view('ctegory.index');
+
+
+
+//====================================================================================================== update controller (ni image)
+
+    public function update(PropertyRequest $request, $id)
+    {
+        $property = Property::query()->findOrFail($id);
+        $property->update($request->validated());  // تمام متغیر هایی که درون ولیدیت ریکوست خودکار تشخیص میده آپدیت میکنه جز عکس
+        return redirect(route('properties.create'))->with('update' , 'زیر دسته گروه مشخصات با موفقیت به روزرسانی شد');
+    }
+
+
+
+//====================================================================================================== ->name('client.')
+
+//--------------- web.php  هرچی روت درون کلاینت
+Route::prefix('')->name('client.')->group(function () {         // ثبل تمام روت ها این client. قرار بگیره
+
+//--------------- clean code
+    view()->composer(['client.*'], function ($view) {    // تمام روت های سمت کلایت که نیم یا اسمشون این client.*
+        $view->with([
+            'categories' => Category::query()->where('parent_id', '=', null)->get(),
+            'brands' => Brand::all(),
+        ]);
+    });
+
+    //-------------- change route first | route('client.')
+
+    return redirect(route('client.home'));
+    <h4><a href="{{ route('client.productDetails.show' , $product) }}">{{ $product->name }}</a></h4>  {{-- slug --}}
+    <form class="form-horizontal" method="post" action="{{ route('client.register.sendmail') }}">
+
+
+//====================================================================================================== Many to Mant CRUD
+        $category = Category::query()->create([
+        'parent_id' => $request->get('parent_id'),
+        'title_fa' => $request->get('title_fa'),
+        'title_en' => $request->get('title_en'),
+         ]);
+         *$category->propertyGroups()->attach($request->get('propertyGroup'));
+
+
+        $category = Category::query()->findOrFail($id);
+       *$category->propertyGroups()->sync($request->get('propertyGroup'));
+
+        $category->propertyGroups()->detach();   // میاد جدول رابط مشخصات پاک میکنه
+        *Category::findOrFail($id)->delete();
+
+
+//====================================================================================================== insert pivot table(just id)
+    //---------------------------------------------------  relationship product & property(subtitle propertyGroup)
+
+    public function properties(): \Illuminate\Database\Eloquent\Relations\BelongsToMany  // زیر مجموعه مشخصات محصول متعلق به تعداد زیادی از محصولات
+    {
+        return $this->belongsToMany(Property::class)->withPivot(['value'])->withTimestamps();
+         //withTimestamps مثل قبلی برای اضافه کردن تایم اسمپ //withPivot جدول (پیوت) فقط برای آیدی ها این جا (ولیو) اضافی با این اضافه میکنیم در نظر بگیره
+    }
+
+
+     public function products()
+    {
+        //withTimestamps مثل قبلی برای اضافه کردن تایم اسمپ //withPivot جدول (پیوت) فقط برای آیدی ها این جا (ولیو) اضافی با این اضافه میکنیم در نظر بگیره
+        return $this->belongsToMany(Product::class)->withPivot(['value'])->withTimestamps();
+    }
+
+
+    public function getValueForProduct($product)       // get value (product_properties)
+    {
+        $productPropertyQuery = $this->products()->where('product_id' , '=' , $product->id); // رابطه با جدول محصول و اگر آیدی محصول با آیدی جدول رابط یکی بود
+        if (!$productPropertyQuery->exists()) {
+            return null;
+        }
+        return $productPropertyQuery->first()->pivot->value;  // بیا بگیر از طریق pivot (ولیو) مشخصات چون یکی از (فرست) استفاده میکنیم
+    }
+
+//----------------------------- blade
+
+   <form action="{{ route('product.properties.store' , $product) }}" method="post" class="padding-30"/>
+        @csrf
+
+        @foreach ($propertyGroups as $group)
+            <h4 class="text-info" style="margin-top: 10px">{{ $group->title }}</h4>
+
+            <div class="row">
+                @foreach ($group->properties as $property)
+                    <div class="col-sm-6 form-group">
+
+                        <div class="col-sm-2" style="padding-right: 10px">
+                            <label for="title" style="font-size: 15px;margin-right: 10px">{{ $property->title }}</label>
+                        </div>
+
+                       <div class="col-sm-10 padding-0-18">
+                           {{--  array2D -> properties[{{ $property->id }}][value]   میاد در قسمت اول ایدی زیرمجموعه مشخصات میگیره | دومی (ولیو) یا نوشته متن میگیره --}}
+                           *<input type="text" name="properties[{{ $property->id }}][value]"
+                                   value="{{ $property->getValueForProduct($product) }}" id="title" class="text"/>
+                       </div>
+
+                    </div>
+                @endforeach
+            </div>
+
+        @endforeach
+
+        <button class="btn btn-brand" style="margin-top: 20px">اضافه کردن</button>
+   </form>
+
+
+//====================================================================================================== collection (table not null)
+
+//collection filter (closure) | اگر خالی نبود خود متن بنویس اگه خالی بود بیا (سینک) اجرا کن که میاد دلیت میکنه از جدول با (کالکشن) ها ممکن میشه
+$properties = collect($request->get('properties'))->filter(function ($item) {
+    if (!empty($item['value'])) {
+        return $item;
+    }
+});
+
+$product->properties()->sync($properties);   //sync همزمان هم اضافه میکنه هم آپدیت | فقط یک بار به جدول اضافه میشه دفعات بعدی آپدیت میشه
+
+
+//====================================================================================================== Comment
+//------------------ web.php
+Route::post('/product/{product}/comments/store', [CommentController::class, "store"])->name('product.commects.store'); / * صفحه تکی مشخصات محصول * /
+
+
+//------------------ migration
+$table->enum('status' , ['0','1']);  //1)name 2)boolean
+
+
+//------------------ blade
+<td class="text-right"><span>{{ verta()->instance($comment->created_at)->formatDifference() }}</span></td>   چند دقیقه قبل//
+
+@foreach ($product->comments()->latest()->get() as $comment)       // سورت کردن پیام ها از جدید به قدیم بیان بالا تر
+
+@if ($comment->status === '1' )                                     // کامنت هایی که وضعیت شماره یک دارن نمایش بده
+
+//====================================================================================================== likes
+
+//------------------------------ Product Model
+public function getRouteKeyName(): string    // getRouteKeyName | میتونه براس ستون های درون جدول یمقدار بگیره به کل این مادل بده
+{
+//      return 'slug'; // تو کا پروژه قرار میگیره
+
+        if (\request()->route()->getPrefix() === '/adminPanel' || \request()->routeIs('client.home')) {  //رکوست ها روت ها که درون پرفیکس برای سمت ادمین بودن فقط اسلاگ
+        return 'slug';
+
+    } else {
+        $identifier = Route::current()->parameters()['product'];  // پارامتر های جاری یوت پروداکت میگیره
+        if (!ctype_digit($identifier)) {  //ctype_digit  -->  type number
+            return 'slug';
+        }
+        return 'id';
+    }
+}
+
+//-------------------------------- product.index.blade
+<td><a href="{{ route('product.properties.index' , $product->slug) }}" class="btnDanger">ویژگی</a></td>
+<td><a href="{{ route('product.comments.index' , $product->slug) }}" class="btnPrimary">نظرات</a></td>
+
+
+//---------------------------------- footer
+<script>
+    function likeProduct(productId) {
+        $.ajax({
+            type: 'post',
+            url: '/likes/' + productId,
+            data: {
+                _token: "{{ csrf_token() }}"
+            }
+        });
+    }
+</script>
+
+
+//====================================================================================================== laravel debugbar
+composer require barryvdh/laravel-debugbar --dev                                              // laravel8 is code ok
+
+//====================================================================================================== likes controller Model
+
+class LikeController extends Controller
+{
+
+    public function __construct()
+    {
+        return $this->middleware('auth');
+    }
+
+
+    public function index()
+    {
+        return view('client.profile.index', [
+            'products' => auth()->user()->likes,
+        ]);
+    }
+
+
+    public function store(Request $request, Product $product)
+    {
+
+        if (!auth()->check()) {                                                                       // user not login
+            return response(['msg' => 'user is not logged in!'], 500);
+        }
+
+        auth()->user()->likeProduct($product);   // sync اگر بیشتر روی لایک کلیک کرد این همگام سازی بشه نه دیتا تو دیتابیس ذخیره بشه مثل (اتچ)
+        return response(['likes_count' => auth()->user()->likes->count()], 200);
+    }
+
+
+    public function destroy(Product $product): \Illuminate\Http\RedirectResponse
+    {
+        auth()->user()->likes()->detach($product);                            // کاربری که لاگین هست بیاد لایکش حذف بشه از قسمت محصولات
+        return back()->with('delete' , 'لیست علاقه مندی با موفقیت حذف شد');
+    }
+
+}
+
+//---------------------------- model user store
+
+    //----------------------------- like
+    public function likes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Product::class , 'likes')->withTimestamps();   // table=like چون تلفیقی از دو جدولم نیست بهتر بنویسیم
+    }
+
+    //***************************************************************************
+
+
+    //---------------------------- likeProduct
+    public function likeProduct(Product $product)
+    {
+        $isLikedBefore = $this->likes()->where('id' , '=' , $product->id)->exists();  //دوبار توی یک جدول بود از یک دیتا بیا جذف کن اگر یک بار بود اضافه
+        if ($isLikedBefore) {
+            return $this->likes()->detach($product);
+        }
+        return $this->likes()->attach($product);  // sync update just one table(column) , for many click button likes
+    }
+
+
+//---------------------------- model user store
+
+    //--------------------------------------------------- slug
+
+    public function getRouteKeyName(): string    // getRouteKeyName | میتونه براس ستون های درون جدول یمقدار بگیره به کل این مادل بده
+    {
+//      return 'slug'; // تو کا پروژه قرار میگیره
+
+        //رکوست ها روت ها که درون پرفیکس برای سمت ادمین بودن فقط اسلاگ
+        if (\request()->route()->getPrefix() === '/adminPanel' || \request()->routeIs(['client.home' , 'likes.wishList.index'])) {
+            return 'slug';
+
+        } else {
+            $identifier = Route::current()->parameters()['product'];  // پارامتر های جاری یوت پروداکت میگیره
+            if (!ctype_digit($identifier)) {  //ctype_digit  -->  type number
+                return 'slug';
+            }
+            return 'id';
+        }
+
+    }
+
+
+    //--------------------------------------------------- Mutator Accessor  (is_liked)
+
+    public function getIsLikedAttribute(): bool
+    {
+        return $this->likes()->where('user_id' , '=' , auth()->id())->exists();    // return boolean | آیدی کاربری که لاگین کرده برابر آیدی جدول لایک
+    }
+
+
+
+//====================================================================================================== JalaliDatePicker
+
+
+@section('links')
+   <link type="text/css" rel="stylesheet" href="{{ asset('admin/css/jalalidatepicker.min.css') }}" />
+@endsection
+
+    <form action="{{ route('offer.store') }}" method="post" class="padding-30">
+
+        <input type="text" value="{{ old('code') }}" name="code" placeholder="کد تخفیف وارد نمایید" class="text">
+        <input data-jdp type="text" value="{{ old('start_at') }}" name="start_at" placeholder="زمان شروع تخفیف وارد نمایید" autocomplete="false" class="text">
+        <input data-jdp type="text" value="{{ old('end_at') }}" name="end_at" placeholder="زمان پایان تخفیف وارد نمایید" autocomplete="false" class="text">
+    </form>
+</div>
+
+@section('scripts')
+    <script type="text/javascript" src="{{ asset('admin/js/jalalidatepicker.min.js') }}"></script>
+
+    <script>
+jalaliDatepicker.startWatch({
+
+            separatorChar : "/" ,
+            minDate : "attr",
+            maxDate	: "attr",
+            changeMonthRotateYear : true,
+            showTodayBtn : true,
+            showEmptyBtn : true,
+
+        })
+        //flatpicker("[date-jdp]")
+        document.getElementById("aaa").addEventListener("jdp:change" , function (e) { console.log(e) });
+
+    </script>
+
+@endsection
+
+
+//-------------------------------------- controller store offer
+    public static function start_at(OfferRequest $request)
+    {
+        $date = explode('/' , $request->get('start_at'));   //1-یک رشته ای میگیره حالت جداکننده داره | 2-میاد اولی درون تمام آرایه ها میریزه جدا میکنه
+        $year = $date[0];
+        $month = $date[1];
+        $day = $date[2];
+
+        $time = Verta::getGregorian($year,$month , $day);
+        return join('-' , $time);    // میتاد با - هر سه متغیر جدا میکنه
+    }
+
+
+//-------------------------------------- model store offer
+    public function store(OfferRequest $request)
+    {
+        Offer::query()->create([
+           'code' => $request->get('code'),
+           'start_at' => Offer::start_at($request),        //jalali --> miladi
+           'end_at' => Offer::end_at($request),
+        ]);
+        return redirect(route('offer.create'))->with('success' , 'کد تخفیف با موفقیت افزوده شد');
+    }
+
+//-------------------------------------- validate
+if (request()->routeIs('offer.store')) {
+    return [
+
+        'code' => 'required|unique:offers,code',
+        'start_at' => 'required|jdate|before:end_at',       //before:end_at قبل از ستون پایان کد تخفیف | date نوع تاریخ
+        'end_at' => 'required|jdate|after:start_at',       //after:start_at بعد از ستون شروع کد تخفیف
+    ];
+
+} else {
+
+    return [
+        'code' => 'required',
+        'start_at' => 'required|jdate|before:end_at',
+        'end_at' => 'required|jdate|after:start_at',
+    ];
+
+}
+
+
+
+//--------------------------------------- controller update
+public function update(OfferRequest $request, Offer $offer)
+{
+    $offerUnique = Offer::query()->where('code', '=', $request->get('code'))->where('id', '!=', $offer->id)->exists();
+    if ($offerUnique) {
+        return back()->withErrors(['کد تخفیف قبلا انتخاب شده لطفا یک کد تخفیف جدید وارد نمایید']);
+    }
+
+    $offer->update([
+        'code' => $request->get('code'),
+        'start_at' => Offer::start_at($request),
+        'end_at' => Offer::end_at($request),
+    ]);
+    return redirect(route('offer.create'))->with('update', 'کد تخفیف با موفقیت به روز رسانی شد');
+}
+
+
+
+//====================================================================================================== Observer Session
+//-------------------------- web.php
+*observer--->  php artisan make:observer CategoryObserver--model = Category
+
+
+//-------------------------- AppserviceProvider
+  Category::observe(CategoryObserver::class);   //حالت observer
+
+
+//-------------------------- CategoryObserver
+
+class CategoryObserver
+{
+
+    public function created(Category $category)
+    {
+        session()->flash('success', "دسته بندی {$category->title_fa} با موفقیت افزوده شد");
+    }
+
+
+    public function updated(Category $category)
+    {
+        session()->flash('update', "دسته بندی {$category->title_fa} با موفقیت به روزرسانی شد");
+    }
+
+
+    public function deleted(Category $category)
+    {
+        session()->flash('delete', "دسته بندی {$category->title_fa} با موفقیت حذف شد");
+    }
+
+
+    public function restored(Category $category)
+    {
+        //
+    }
+
+
+    public function forceDeleted(Category $category)
+    {
+        //
+    }
+
+}
+//====================================================================================================== Cart (buy product)
+
+//------------------------- show.blade.php
+     <input type="text" name="quantity" value="1" size="2" id="input-quantity" class="form-control"/>
+     <a class="qtyBtn plus" href="javascript:void(0);">+</a><br/>
+     <a class="qtyBtn mines" href="javascript:void(0);">-</a>
+
+     <button type="button" id="button-cart" onclick="addToCard({{ $product->id }})" class="btn btn-primary btn-lg">افزودن به سبد</button>
+
+
+//-------------------------- _footer.blade.php
+
+    function addToCard(productId) {
+
+        let quantity = 1;                                     //home page low one quantity product حداقل یک محصول در نظر بگیره در صفحه اصلی که تعداد نداره
+        if ($('#input-quantity').length) {                   //if more 1 product go to quantity | $('#input-quantity').length > 1
+            quantity = $('#input-quantity').val();          //value input-quantity
+        }
+
+        $.ajax({
+            type: 'post',
+            url: '/card/' + productId,
+            data: {
+                _token: "{{ csrf_token() }}",
+                productId: productId,
+                quantity: quantity,   //number product
+            },
+        });
+    }
+
+
+//-------------------------- model Cart
+public static function newCard(Product $product, Request $request)
+{
+    if (session()->has('cart')) {                      //اگر سشن کارت یا سبد خرید وجود داشت بیا بگیر سشن
+        $cart = session()->get('cart');
+    }
+
+    $cart[$product->id] = [                            //$cart[$product->id] میاد اول و آخر آرایه چک میکنه اگر وجود داشت اضافه نکنه | برای جلوگیری از تکرار نوشتیم
+        'product' => $product,
+        'quantity' => $request->get('quantity'),
+    ];
+
+    session()->put([     //put -> insert
+        'cart' => $cart,
+    ]);
+
+}
+
+
+//======================================================================================================
+
+
 
 
 */

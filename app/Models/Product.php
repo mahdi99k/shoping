@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property mixed id
+ */
 class Product extends Model
 {
     use HasFactory;
@@ -16,32 +20,86 @@ class Product extends Model
     protected $guarded = ['id'];
     protected $dates = ['deleted_at'];                    // delete data in the column deleted_at
 
+    //---------------------------------------------------
+
     public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id');  // هر محصول برای یک دسته بندی و دسته محصولات برده متلق به جدول دسته بندی
     }
+
+//---------------------------------------------------
 
     public function brand(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Brand::class, 'brand_id');  // هر محصول برای یک برند و دسته محصولات برده متلق به جدول دسته بندی
     }
 
+    //---------------------------------------------------
 
     public function galleies(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Gallery::class, 'product_id');   // هر محصول میتونه کلی گالری داشته باشه
     }
 
+    //--------------------------------------------------- slug
 
     public function getRouteKeyName(): string    // getRouteKeyName | میتونه براس ستون های درون جدول یمقدار بگیره به کل این مادل بده
     {
-        return 'slug';  // تو کا پروژه قرار میگیره
+//      return 'slug'; // تو کا پروژه قرار میگیره
+
+        //رکوست ها روت ها که درون پرفیکس برای سمت ادمین بودن فقط اسلاگ
+        if (\request()->route()->getPrefix() === '/adminPanel' || \request()->routeIs(['client.home' , 'likes.wishList.index'])) {
+            return 'slug';
+
+        } else {
+            $identifier = Route::current()->parameters()['product'];  // پارامتر های جاری یوت پروداکت میگیره
+            if (!ctype_digit($identifier)) {  //ctype_digit  -->  type number
+                return 'slug';
+            }
+            return 'id';
+        }
+
     }
+
+
+    //--------------------------------------------------- Mutator Accessor  (is_liked) // show red like
+
+    public function getIsLikedAttribute(): bool
+    {
+        return $this->likes()->where('user_id' , '=' , auth()->id())->exists();    // return boolean | آیدی کاربری که لاگین کرده برابر آیدی جدول لایک
+    }
+
+
+    //---------------------------------------------------
 
     public function discount(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Discount::class, 'product_id');   // هر محصول یک تخفیف دارد رابطه (one to one)
     }
+
+    //---------------------------------------------------  relationship product & property(subtitle propertyGroup)
+
+    public function properties(): \Illuminate\Database\Eloquent\Relations\BelongsToMany  // زیر مجموعه مشخصات محصول متعلق به تعداد زیادی از محصولات
+    {
+        return $this->belongsToMany(Property::class)->withPivot(['value'])
+            ->withTimestamps(); //withTimestamps مثل قبلی برای اضافه کردن تایم اسمپ //withPivot جدول (پیوت) فقط برای آیدی ها این جا (ولیو) اضافی با این اضافه میکنیم در نظر بگیره
+    }
+
+    //-------------------------------------------------- comments
+
+    public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Comment::class, 'product_id');  // هر محصول تعداد زیادی دارد کامنت
+    }
+
+    //-------------------------------------------------- comments
+    public function likes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'likes')->withTimestamps();  // table=like چون تلفیقی از دو جدولم نیست بهتر بنویسیم
+    }
+
+
+
 
     //--------------------------------------------------- Gallery
 
@@ -123,9 +181,6 @@ class Product extends Model
         }
         return null;
     }
-
-
-    //---------------------------------------------------
 
 
 }

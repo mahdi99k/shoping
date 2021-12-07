@@ -3,9 +3,7 @@
 
     @includeIf('admin.partials._errors')
 
-    @if (session('success'))
-        <div class="text-success text-center" style="margin-top: 10px">{{ session('success') }}</div>
-    @endif
+    {{--@includeIf('admin.partials.notification')--}}
 
     <form action="{{ route('brands.store') }}" method="post" class="padding-30" enctype="multipart/form-data">
         @csrf

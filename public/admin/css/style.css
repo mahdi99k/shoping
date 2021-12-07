@@ -1020,7 +1020,7 @@ textarea {
     cursor: pointer;
 }
 
-/*   style button me   */
+/*------------------   style button me   ------------------*/
 
 .btnSuccess {
     background-color: #00b894;
@@ -1047,7 +1047,8 @@ textarea {
 
 
 .btnDanger {
-    background-color: #c9302c;
+    /*background-color: #c9302c;*/
+    background-color: #FF1744;
     border: none;
     color: whitesmoke;
     padding: 4px 15px;
@@ -1060,7 +1061,8 @@ textarea {
 }
 
 .btnDanger:hover {
-    background-color: #c9302c;
+    /*background-color: #c9302c;*/
+    background-color: #E91E63;
     color: #FFEBEE;
 }
 
@@ -1074,6 +1076,16 @@ textarea {
     align-items: center;
     flex-wrap: wrap; /* بیان زیر هم نره اسکرول بخوره  */
 }
+
+.textBold{
+    font-weight: bold;
+}
+
+
+.like {
+    color: crimson;
+}
+
 
 
 .btnWarning {
@@ -1099,7 +1111,30 @@ textarea {
 }
 
 
-/*   style button me   */
+.btnPrimary {
+    background-color: #00B0FF;
+    border: none;
+    color: #E3F2FD;
+    padding: 4px 12px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.btnPrimary:hover {
+    background-color: #448AFF;
+    color: #E3F2FD;
+}
+
+.btnPrimary:hover {
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.24), 0 5px 15px 0 rgba(0, 0, 0, 0.19);
+}
+
+
+/*------------------   style button me   ------------------*/
 
 .item-lock:before {
     content: '\E0c4';

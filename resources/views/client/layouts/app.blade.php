@@ -1,5 +1,5 @@
 <!-- Header Project start -->
-@section('title'  , 'مارکت شاپ - قالب HTML فروشگاهی')
+@section('titleWeb'  , 'فروشگاه مارکت شاپ')
 @include('client.layouts._header')
 <!-- End Header Project end -->
 

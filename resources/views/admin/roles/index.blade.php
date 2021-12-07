@@ -55,7 +55,7 @@
 
                         @empty
                             <tr>
-                                <td colspan="4">دیتایی درون جدول نقش ها وجود ندارد</td>
+                                <td colspan="4" class="text-error" style="font-weight: bold">دیتایی درون جدول نقش ها وجود ندارد</td>
                             </tr>
 
                         @endforelse

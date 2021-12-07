@@ -18,6 +18,11 @@ class BrandController extends Controller
 
     public function create()
     {
+
+        /*if (!\Gate::allows('create-brand')) {
+            abort('403');
+        }*/
+
         $brands = Brand::query()->paginate(4);
         return view('admin.brands.index', compact('brands'));
     }
@@ -34,7 +39,9 @@ class BrandController extends Controller
             'name' => $request->get('name'),
             'image' => $path,
         ]);
-        return redirect(route('brands.create'))->with('success', 'برند با موفقیت افزوده شد');
+        /* session created observer */
+        return redirect(route('brands.create'));
+//      return redirect(route('brands.create'))->with('success', 'برند با موفقیت افزوده شد');
 //      return redirect()->route('brands.create');
 //      return redirect('brands/create');
 //      return back();
@@ -71,7 +78,9 @@ class BrandController extends Controller
             'image' => $path,
         ]);
 
-        return redirect(route('brands.create'))->with('update', 'برند با موفقیت به روزرسانی شد');
+        /* session updated observer */
+        return redirect(route('brands.create'));
+//      return redirect(route('brands.create'))->with('update', 'برند با موفقیت به روزرسانی شد');
     }
 
 
@@ -84,7 +93,9 @@ class BrandController extends Controller
 //      Brand::query()->where('id', '=', $id)->delete();
 //      Brand::query()->findOrFail($id)->delete();
         $brand->delete();
-        return redirect(route('brands.create'))->with('delete', 'برند با موفقیت حذف شد');
+        /* session deleted observer */
+        return redirect(route('brands.create'));
+//      return redirect(route('brands.create'))->with('delete', 'برند با موفقیت حذف شد');
     }
 
 

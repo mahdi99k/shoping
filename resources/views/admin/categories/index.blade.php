@@ -8,16 +8,9 @@
     <div class="main-content padding-0 categories">
         <div class="row no-gutters">
 
-            <div class="col-8 margin-left-10 margin-bottom-15 border-radius-3">
+            <div class="col-12 margin-left-10 margin-bottom-15 border-radius-3">
 
-                @if (session('update'))
-                    <div class="text-success text-center margin-bottom-10">{{ session('update') }}</div>
-                @endif
-
-                @if (session('delete'))
-                    <div class="text-error text-center margin-bottom-10">{{ session('delete') }}</div>
-                @endif
-
+            @includeIf('admin.partials.notification') {{-- update , delete , success --}}
 
                 <p class="box__title">دسته بندی ها</p>
                 <div class="table__box">
@@ -68,7 +61,7 @@
 
                         @empty
                             <tr>
-                                <td colspan="5">دیتایی درون جدول دسته بندی ها وجود ندارد</td>
+                                <td colspan="5" class="text-error" style="font-weight: bold">دیتایی درون جدول دسته بندی ها وجود ندارد</td>
                             </tr>
 
                         @endforelse

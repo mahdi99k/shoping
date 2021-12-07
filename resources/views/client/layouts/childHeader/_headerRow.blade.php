@@ -35,10 +35,8 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="text-center"><a href="product.html"><img class="img-thumbnail"
-                                                                                        title="تبلت ایسر"
-                                                                                        alt="تبلت ایسر"
-                                                                                        src="/client/image/product/samsung_tab_1-50x75.jpg"></a>
+                                    <td class="text-center"><a href="product.html">
+                                            <img class="img-thumbnail" title="تبلت ایسر" alt="تبلت ایسر" src="/client/image/product/samsung_tab_1-50x75.jpg"></a>
                                     </td>
                                     <td class="text-left"><a href="product.html">تبلت ایسر</a></td>
                                     <td class="text-right">x 1</td>
@@ -75,8 +73,7 @@
                                 </table>
                                 <p class="checkout"><a href="cart.html" class="btn btn-primary"><i
                                             class="fa fa-shopping-cart"></i> مشاهده سبد</a>&nbsp;&nbsp;&nbsp;<a
-                                        href="checkout.html" class="btn btn-primary"><i class="fa fa-share"></i>
-                                        تسویه حساب</a></p>
+                                        href="checkout.html" class="btn btn-primary"><i class="fa fa-share"></i>تسویه حساب</a></p>
                             </div>
                         </li>
                     </ul>

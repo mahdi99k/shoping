@@ -1,6 +1,6 @@
 @extends('client.layouts.app')
 
-@section('title' , "  مشخصات محصول $product->name")
+@section('titleWeb' , "  مشخصات محصول $product->name")
 
 @section('links')
     <link rel="stylesheet" type="text/css" href="/client/js/swipebox/src/css/swipebox.min.css">
@@ -121,26 +121,28 @@
                                     </div>
                                     <div class="cart">
                                         <div>
+
                                             <div class="qty">
                                                 <label class="control-label" for="input-quantity">تعداد</label>
-                                                <input type="text" name="quantity" value="1" size="2"
-                                                       id="input-quantity" class="form-control"/>
+                                                <input type="text" name="quantity" value="1" size="2" id="input-quantity" class="form-control"/>
                                                 <a class="qtyBtn plus" href="javascript:void(0);">+</a><br/>
                                                 <a class="qtyBtn mines" href="javascript:void(0);">-</a>
                                                 <div class="clear"></div>
                                             </div>
-                                            <button type="button" id="button-cart" class="btn btn-primary btn-lg">افزودن
-                                                به سبد
-                                            </button>
+
+                                            <button type="button" id="button-cart" onclick="addToCart({{ $product->id }})" class="btn btn-primary btn-lg">افزودن به سبد</button>
+
                                         </div>
                                         <div>
-                                            <button type="button" class="wishlist" onClick=""><i
-                                                    class="fa fa-heart"></i> افزودن به علاقه مندی ها
-                                            </button>
+
+                                           @auth
+                                                <button id="like-{{ $product->id }}" type="button" class="wishlist" onClick=likeProduct({{ $product->id }}) style="font-size: 14px">
+                                                    <i class="fa fa-heart @if ($product->is_liked) like @endif" style="font-size: 17px"></i> افزودن به علاقه مندی ها</button>
+                                           @endauth
+
                                             <br/>
-                                            <button type="button" class="wishlist" onClick=""><i
-                                                    class="fa fa-exchange"></i> مقایسه این محصول
-                                            </button>
+                                            <button type="button" class="wishlist" onClick="" style="font-size: 14px">
+                                                <i class="fa fa-exchange" style="font-size: 17px"></i> مقایسه این محصول</button>
                                         </div>
                                     </div>
                                 </div>
@@ -175,11 +177,18 @@
                                 <!-- AddThis Button END -->
                             </div>
                         </div>
+
+                        @if (session('success'))
+                            <h5 class="text-center alert alert-success margin-bottom-10">{{ session('success') }}</h5>
+                        @endif
+
                         <ul class="nav nav-tabs">
                             <li class="active"><a href="#tab-description" data-toggle="tab">توضیحات</a></li>
                             <li><a href="#tab-specification" data-toggle="tab">مشخصات</a></li>
-                            <li><a href="#tab-review" data-toggle="tab">بررسی (2)</a></li>
+                            <li><a href="#tab-review" data-toggle="tab"> بررسی ({{ $product->comments->count() }})</a></li>
                         </ul>
+
+
                         <div class="tab-content">
                             <div itemprop="description" id="tab-description" class="tab-pane active">
                                 <div>
@@ -188,119 +197,122 @@
                             </div>
                             <div id="tab-specification" class="tab-pane">
                                 <div id="tab-specification" class="tab-pane">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <td colspan="2"><strong>حافظه</strong></td>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>تست 1</td>
-                                            <td>8gb</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <table class="table table-bordered">
-                                        <thead>
-                                        <tr>
-                                            <td colspan="2"><strong>پردازشگر</strong></td>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>تعداد هسته</td>
-                                            <td>1</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+
+
+                                    @forelse ($propertyGroups as $group)
+
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <td colspan="2"><strong>{{ $group->title }}</strong></td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            @foreach ($group->properties as $property)
+                                                <tr>
+                                                    <td>{{ $property->title }}</td>
+                                                    <td>{{ $property->getValueForProduct($product) }}</td>
+                                                </tr>
+                                            @endforeach
+
+
+                                            </tbody>
+                                        </table>
+
+                                    @empty
+                                        <table class="table table-bordered">
+                                            <thead>
+                                            <tr>
+                                                <td colspan="2"><strong>حافظه</strong></td>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td>تست 1</td>
+                                                <td>8GB</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    @endforelse
+
+
+
+
+
                                 </div>
                             </div>
                             <div id="tab-review" class="tab-pane">
-                                <form class="form-horizontal">
+                                <div class="form-horizontal">
                                     <div id="review">
                                         <div>
-                                            <table class="table table-striped table-bordered">
-                                                <tbody>
-                                                <tr>
-                                                    <td style="width: 50%;"><strong><span>هاروی</span></strong></td>
-                                                    <td class="text-right"><span>1395/1/20</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="2"><p>ارائه راهکارها و شرایط سخت تایپ به پایان رسد
-                                                            وزمان مورد نیاز شامل حروفچینی دستاوردهای اصلی و جوابگوی سوالات
-                                                            پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد.</p>
-                                                        <div class="rating"><span class="fa fa-stack"><i
-                                                                    class="fa fa-star fa-stack-2x"></i><i
-                                                                    class="fa fa-star-o fa-stack-2x"></i></span> <span
-                                                                class="fa fa-stack"><i
-                                                                    class="fa fa-star fa-stack-2x"></i><i
-                                                                    class="fa fa-star-o fa-stack-2x"></i></span> <span
-                                                                class="fa fa-stack"><i
-                                                                    class="fa fa-star fa-stack-2x"></i><i
-                                                                    class="fa fa-star-o fa-stack-2x"></i></span> <span
-                                                                class="fa fa-stack"><i
-                                                                    class="fa fa-star fa-stack-2x"></i><i
-                                                                    class="fa fa-star-o fa-stack-2x"></i></span> <span
-                                                                class="fa fa-stack"><i
-                                                                    class="fa fa-star fa-stack-2x"></i><i
-                                                                    class="fa fa-star-o fa-stack-2x"></i></span></div>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
-                                            <table class="table table-striped table-bordered">
-                                                <tbody>
-                                                <tr>
-                                                    <td style="width: 50%;"><strong><span>اندرسون</span></strong></td>
-                                                    <td class="text-right"><span>1395/1/20</span></td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="2"><p>ارائه راهکارها و شرایط سخت تایپ به پایان رسد
-                                                            وزمان مورد نیاز شامل حروفچینی دستاوردهای اصلی و جوابگوی سوالات
-                                                            پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد.</p>
-                                                        <div class="rating"><span class="fa fa-stack"><i
-                                                                    class="fa fa-star fa-stack-2x"></i><i
-                                                                    class="fa fa-star-o fa-stack-2x"></i></span> <span
-                                                                class="fa fa-stack"><i
-                                                                    class="fa fa-star fa-stack-2x"></i><i
-                                                                    class="fa fa-star-o fa-stack-2x"></i></span> <span
-                                                                class="fa fa-stack"><i
-                                                                    class="fa fa-star fa-stack-2x"></i><i
-                                                                    class="fa fa-star-o fa-stack-2x"></i></span> <span
-                                                                class="fa fa-stack"><i
-                                                                    class="fa fa-star-o fa-stack-2x"></i></span> <span
-                                                                class="fa fa-stack"><i
-                                                                    class="fa fa-star-o fa-stack-2x"></i></span></div>
-                                                    </td>
-                                                </tr>
-                                                </tbody>
-                                            </table>
+
+                                            @foreach ($product->comments()->latest()->get() as $comment)
+
+                                                @if ($comment->status === '1' )
+
+                                                    <table class="table table-striped table-bordered">
+                                                        <tbody>
+                                                        <tr>
+                                                            <td style="width: 50%;"><strong><span>{{ $comment->user->name }}</span></strong></td>
+                                                            <td class="text-right"><span>{{ verta()->instance($comment->created_at)->formatDifference() }}</span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2">
+
+                                                                <p>{{ $comment->comment }}</p>
+
+                                                                <div class="rating">
+                                                                <span class="fa fa-stack"><i
+                                                                        class="fa fa-star fa-stack-2x"></i><i
+                                                                        class="fa fa-star-o fa-stack-2x"></i></span> <span
+                                                                        class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i
+                                                                            class="fa fa-star-o fa-stack-2x"></i></span> <span class="fa fa-stack"><i
+                                                                            class="fa fa-star fa-stack-2x"></i><i
+                                                                            class="fa fa-star-o fa-stack-2x"></i></span> <span
+                                                                        class="fa fa-stack"><i class="fa fa-star fa-stack-2x"></i><i
+                                                                            class="fa fa-star-o fa-stack-2x"></i></span> <span class="fa fa-stack"><i
+                                                                            class="fa fa-star fa-stack-2x"></i><i class="fa fa-star-o fa-stack-2x"></i></span></div>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+
+                                                @endif
+
+                                            @endforeach
+
                                         </div>
                                         <div class="text-right"></div>
                                     </div>
-                                    <h2>یک بررسی بنویسید</h2>
-                                    <div class="form-group required">
-                                        <div class="col-sm-12">
-                                            <label for="input-name" class="control-label">نام شما</label>
-                                            <input type="text" class="form-control" id="input-name" value=""
-                                                   name="name">
-                                        </div>
-                                    </div>
-                                    <div class="form-group required">
-                                        <div class="col-sm-12">
-                                            <label for="input-review" class="control-label">بررسی شما</label>
-                                            <textarea class="form-control" id="input-review" rows="5"
-                                                      name="text"></textarea>
-                                            <div class="help-block"><span class="text-danger">توجه :</span> HTML
-                                                بازگردانی نخواهد شد!
+
+
+
+                                    @auth
+
+                                        <h2>یک بررسی بنویسید</h2>
+                                        <form action="{{ route('client.product.commects.store' , $product) }}" class="form-group" method="post">
+                                            @csrf
+                                            <div class="form-group required">
+                                                <div class="col-sm-12">
+                                                    <label for="input-review" class="control-label">بررسی نظر شما</label>
+                                                    <textarea class="form-control" id="input-review" rows="6" name="comment"
+                                                              placeholder="نظر خود را وارد نمایید..." style="resize: none;"></textarea>
+                                                    <div class="help-block"><span class="text-danger">توجه :</span> HTML بازگردانی نخواهد شد!</div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                            <input type="submit" class="btn btn-success" value="ثبت نظر">
+                                        </form>
+
+                                    @else
+                                        <h4 class="alert alert-warning text-center">برای ثبت نظر خود ابتدا باید لاگین کنید</h4>
+                                        <a href="{{ route('client.register') }}" class="btn btn-success">ورود | ثبت نام</a>
+                                    @endauth
+
+
                                     <div class="form-group required">
                                         <div class="col-sm-12">
-                                            <label class="control-label">رتبه</label>
-                                            &nbsp;&nbsp;&nbsp; بد&nbsp;
+                                            <label class="control-label">رتبه</label>&nbsp;&nbsp;&nbsp; بد&nbsp;
                                             <input type="radio" value="1" name="rating">
                                             &nbsp;
                                             <input type="radio" value="2" name="rating">
@@ -309,17 +321,15 @@
                                             &nbsp;
                                             <input type="radio" value="4" name="rating">
                                             &nbsp;
-                                            <input type="radio" value="5" name="rating">
-                                            &nbsp;خوب
+                                            <input type="radio" value="5" name="rating">&nbsp;خوب
                                         </div>
                                     </div>
                                     <div class="buttons">
                                         <div class="pull-right">
-                                            <button class="btn btn-primary" id="button-review" type="button">ادامه
-                                            </button>
+                                            <button class="btn btn-primary" id="button-review" type="button">ادامه</button>
                                         </div>
                                     </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                         <h3 class="subtitle">محصولات مرتبط</h3>

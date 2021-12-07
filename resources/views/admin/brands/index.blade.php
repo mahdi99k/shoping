@@ -9,13 +9,7 @@
         <div class="row no-gutters">
             <div class="col-8 margin-left-10 margin-bottom-15 border-radius-3">
 
-                @if (session('delete'))
-                    <div class="text-error text-center margin-bottom-10">{{ session('delete') }}</div>
-                @endif
-
-                @if (session('update'))
-                    <div class="text-success text-center margin-bottom-10">{{ session('update') }}</div>
-                @endif
+                @includeIf('admin.partials.notification')  {{-- update,delete,success --}}
 
                 <p class="box__title">برند ها</p>
                 <div class="table__box">
@@ -58,7 +52,7 @@
 
                         @empty
                             <tr>
-                                <td colspan="5">دیتایی درون جدول برند ها وجود ندارد</td>
+                                <td colspan="5" class="text-error" style="font-weight: bold">دیتایی درون جدول برند ها وجود ندارد</td>
                             </tr>
 
                         @endforelse

@@ -5,7 +5,7 @@
             <ul class="nav navbar-nav">
                 <li><a class="home_link" title="خانه" href="/">خانه</a></li>
 
-                @foreach ($categories as $category)
+                {{--@foreach ($categories as $category)
 
                     <li class="dropdown"><a href="category.html">{{ $category->title_fa }}</a>
                         <div class="dropdown-menu">
@@ -33,7 +33,104 @@
                         </div>
                     </li>
 
-                @endforeach
+                @endforeach--}}
+
+
+                <li class="mega-menu dropdown sub"><a>دسته ها</a>
+                    <span class="submore"></span>
+                    <div class="dropdown-menu" style="margin-left: -1047.88px; display: none;">
+
+                        @forelse($categories as $category)
+
+                            <div class="column col-lg-2 col-md-3"><a href="category.html">{{ $category->title_fa }}</a>
+                                <span class="submore"></span>
+                                <div>
+
+                                    <ul>
+
+                                        @forelse ($category->children as $childrenCategory)
+
+                                            <li><a href="category.html">{{ $childrenCategory->title_fa }}
+                                                    <span> @if($childrenCategory->children->count() > 0) › @endif</span></a>
+
+                                                <span class="submore"></span>
+                                                @if ($childrenCategory->children->count() > 0)
+                                                    <div class="dropdown-menu" style="display: none;">
+                                                        <ul>
+
+                                                            @foreach($childrenCategory->children as $submenu)
+                                                                <li><a href="category.html">{{ $submenu->title_fa }}</a>
+                                                                </li>
+                                                            @endforeach
+
+                                                        </ul>
+                                                    </div>
+                                                @endif
+                                            </li>
+
+                                        @empty
+                                            <li><a href="category.html">دسته بندی ها<span>›</span></a>
+                                                <span class="submore"></span>
+                                                <div class="dropdown-menu" style="display: none;">
+                                                    <ul>
+                                                        <li><a href="category.html">زیردسته ها</a></li>
+                                                        <li><a href="category.html">زیردسته ها</a></li>
+                                                        <li><a href="category.html">زیردسته ها</a></li>
+                                                    </ul>
+                                                </div>
+                                            </li>
+                                        @endforelse
+
+                                    </ul>
+
+                                </div>
+                            </div>
+
+                        @empty
+
+                            <div class="column col-lg-2 col-md-3"><a href="category.html">البسه</a>
+                                <span class="submore"></span>
+                                <div>
+                                    <ul>
+                                        <li><a href="category.html">دسته بندی ها<span>›</span></a>
+                                            <span class="submore"></span>
+                                            <div class="dropdown-menu" style="display: none;">
+                                                <ul>
+                                                    <li><a href="category.html">زیردسته ها</a></li>
+                                                    <li><a href="category.html">زیردسته ها</a></li>
+                                                    <li><a href="category.html">زیردسته ها</a></li>
+
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li><a href="category.html">بانوان</a></li>
+                                        <li><a href="category.html">دخترانه<span>›</span></a>
+                                            <span class="submore"></span>
+                                            <div class="dropdown-menu">
+                                                <ul>
+                                                    <li><a href="category.html">زیردسته ها </a></li>
+                                                    <li><a href="category.html">زیردسته جدید</a></li>
+                                                    <li><a href="category.html">زیردسته جدید</a></li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                        <li><a href="category.html">پسرانه</a></li>
+                                        <li><a href="category.html">نوزاد</a></li>
+                                        <li><a href="category.html">لوازم <span>›</span></a>
+                                            <span class="submore"></span>
+                                            <div class="dropdown-menu">
+                                                <ul>
+                                                    <li><a href="category.html">زیردسته های جدید</a></li>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        @endforelse
+
+                    </div>
+                </li>
 
 
                 <li class="menu_brands dropdown"><a href="#">برند ها</a>
@@ -42,8 +139,9 @@
                         @forelse ($brands as $brand)
 
                             <div class="col-lg-1 col-md-2 col-sm-3 col-xs-6">
-                                <a href="#"><img src="{{ asset('./'.str_replace('public/image-brands/' , 'storage/image-brands/' , $brand->image)) }}"
-                                                 title="{{ $brand->name }}" alt="{{ $brand->name }}" width="50" height="50"/></a>
+                                <a href="#"><img
+                                        src="{{ asset('./'.str_replace('public/image-brands/' , 'storage/image-brands/' , $brand->image)) }}"
+                                        title="{{ $brand->name }}" alt="{{ $brand->name }}" width="80" height="50"/></a>
                                 <a href="#">{{ $brand->name }}</a>
                             </div>
 
@@ -88,12 +186,12 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><strong><a class="btn btn-primary btn-sm" href="#">ادامه
-                                                    مطلب</a></strong></td>
-                                        <td><strong><a class="btn btn-primary btn-sm" href="#">ادامه
-                                                    مطلب</a></strong></td>
-                                        <td><strong><a class="btn btn-primary btn-sm" href="#">ادامه
-                                                    مطلب</a></strong></td>
+                                        <td><strong><a class="btn btn-primary btn-sm" href="#">ادامه مطلب</a></strong>
+                                        </td>
+                                        <td><strong><a class="btn btn-primary btn-sm" href="#">ادامه مطلب</a></strong>
+                                        </td>
+                                        <td><strong><a class="btn btn-primary btn-sm" href="#">ادامه مطلب</a></strong>
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>

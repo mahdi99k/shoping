@@ -1,4 +1,4 @@
-<div class="col-4 bg-white">
+<div class="col-12 bg-white">
     <p class="box__title">ایجاد محصول جدید</p>
 
     @includeIf('admin.partials._errors')

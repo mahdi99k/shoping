@@ -28,6 +28,8 @@ class ProductController extends Controller
             'products' => Product::paginate(7),
             'categories' => Category::all(),
             'brands' => Brand::all(),
+
+
         ]);
     }
 

@@ -10,7 +10,7 @@
         <form action="{{ route('brands.update' , $brand->id) }}" method="post" class="padding-30" enctype="multipart/form-data">
             @csrf
             @method('patch')
-            <input type="text" value="{{ $brand->name }}" name="name" placeholder="نام برند وارد نمایید" class="text"/>
+            <input type="text" value="{{ $brand->name }}" name="name" placeholder="ویرایش نام برند وارد نمایید" class="text"/>
             <label for="image">افزودن عکس</label>
             <input type="file" name="image" id="image" class="text"/>
             <div style="text-align: center">

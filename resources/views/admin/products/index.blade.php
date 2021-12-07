@@ -7,7 +7,7 @@
 
     <div class="main-content padding-0 categories">
         <div class="row no-gutters">
-            <div class="col-8 margin-left-10 margin-bottom-15 border-radius-3">
+            <div class="col-12 margin-left-10 margin-bottom-15 border-radius-3">
 
                 @if (session('delete'))  {{-- product --}}
                     <div class="text-error text-center margin-bottom-10">{{ session('delete') }}</div>
@@ -41,6 +41,8 @@
                             <th>تاریخ ایجاد</th>
                             <th>گالری</th>
                             <th>تخفیف</th>
+                            <th>ویژگی(مشخصات)</th>
+                            <th>نظرات</th>
                             <th>ویرایش</th>
                             <th>حذف</th>
                         </tr>
@@ -62,32 +64,39 @@
                                 <td><a href="">{{ $product->brand->name }}</a></td>
                                 <td><a href="">{{ \Hekmatinasser\Verta\Verta::instance($product->created_at)->format('Y/n/j') }}</a></td>
                                 {{--<td><a href="">{{ \Hekmatinasser\Verta\Verta::instance($product->created_at) }}</a></td>--}}
-                                <td><a href="{{ route('product.gallery.index' , $product) }}" class="btnSuccess">نمایش</a></td>  {{-- slug --}}
+
+
+
+
+                                <td><a href="{{ route('product.gallery.index' , $product->slug) }}" class="btnSuccess">نمایش</a></td>  {{-- slug --}}
 
                                 <td>
                                     @if (!$product->has_discount)  {{-- discount()->exists() --}}
-                                        <a href="{{ route('product.discount.create' , $product) }}" class="btnWarning">تخفیف</a>
+                                        <a href="{{ route('product.discount.create' , $product->slug) }}" class="btnWarning">تخفیف</a>
                                     @else
                                         <a href="" class="btnWarning" style="margin-bottom: 10px">{{ $product->discount_value . '%'}}</a>
-                                        <form action="{{ route('product.discount.destroy',['product' => $product ,'discount' => $product->discount]) }}" method="post">
+                                        <form action="{{ route('product.discount.destroy',['product' => $product->slug ,'discount' => $product->discount]) }}" method="post">
                                             @csrf
                                             @method('delete')
                                             <button type="submit" class="item-delete bg-white" title="حذف"></button>
                                         </form>
 
-                                        <a href="{{ route('product.discount.edit' ,['product' => $product , 'discount' => $product->discount]) }}"
+                                        <a href="{{ route('product.discount.edit' ,['product' => $product->slug , 'discount' => $product->discount]) }}"
                                            class="item-edit" title="ویرایش"></a>
 
                                     @endif
                                 </td>
+                                <td><a href="{{ route('product.properties.index' , $product->slug) }}" class="btnDanger">ویژگی</a></td>
+
+                                <td><a href="{{ route('product.comments.index' , $product->slug) }}" class="btnPrimary">نظرات</a></td>
 
 
                                 <td>
-                                    <a href="{{ route('product.edit' , ['id' => $product->id]) }}" class="item-edit " title="ویرایش"></a>  {{-- slug --}}
+                                    <a href="{{ route('product.edit' , [ $product->id]) }}" class="item-edit " title="ویرایش"></a>  {{-- slug --}}
                                 </td>
 
                                 <td>
-                                    <form action="{{ route('product.destroy' , ['id' => $product->id]) }}" method="post"> {{-- آیدی نمیخواد چون تو مادل محصول حالت روت اسلاگ --}}
+                                    <form action="{{ route('product.destroy' , [ $product->id]) }}" method="post"> {{-- آیدی نمیخواد چون تو مادل محصول حالت روت اسلاگ --}}
                                         @csrf
                                         @method('delete')
                                         <button type="submit" class="item-delete bg-white" title="حذف"></button>
@@ -95,12 +104,14 @@
                                     </form>
                                 </td>
 
+
+
                             </tr>
                             {{--<a href="" target="_blank" class="item-eye mlg-15" title="مشاهده"></a>--}}
 
                         @empty
                             <tr>
-                                <td colspan="9">دیتایی درون جدول محصولات وجود ندارد</td>
+                                <td colspan="14" class="text-error" style="font-weight: bold">دیتایی درون جدول محصولات وجود ندارد</td>
                             </tr>
 
                         @endforelse
