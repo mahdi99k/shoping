@@ -42,7 +42,8 @@
 
                         @forelse($categories as $category)
 
-                            <div class="column col-lg-2 col-md-3"><a href="category.html">{{ $category->title_fa }}</a>
+                            <div class="column col-lg-2 col-md-3"><a
+                                    href="{{ route('client.category.index' , $category) }}">{{ $category->title_fa }}</a> {{-- لینک دسته پدر --}}
                                 <span class="submore"></span>
                                 <div>
 
@@ -50,7 +51,8 @@
 
                                         @forelse ($category->children as $childrenCategory)
 
-                                            <li><a href="category.html">{{ $childrenCategory->title_fa }}
+                                            <li>
+                                                <a href="{{ route('client.category.getChild' , $childrenCategory) }}">{{ $childrenCategory->title_fa }} {{-- لینک زیر مجموعه ها --}}
                                                     <span> @if($childrenCategory->children->count() > 0) › @endif</span></a>
 
                                                 <span class="submore"></span>
@@ -58,9 +60,10 @@
                                                     <div class="dropdown-menu" style="display: none;">
                                                         <ul>
 
-                                                            @foreach($childrenCategory->children as $submenu)
-                                                                <li><a href="category.html">{{ $submenu->title_fa }}</a>
-                                                                </li>
+                                                            @foreach($childrenCategory->children as $submenu)  {{-- زیر دسته فرزند --}}
+                                                            <li>
+                                                                <a href="{{ route('client.category.subtitle' , $submenu) }}">{{ $submenu->title_fa }}</a>
+                                                            </li>
                                                             @endforeach
 
                                                         </ul>
@@ -69,16 +72,6 @@
                                             </li>
 
                                         @empty
-                                            <li><a href="category.html">دسته بندی ها<span>›</span></a>
-                                                <span class="submore"></span>
-                                                <div class="dropdown-menu" style="display: none;">
-                                                    <ul>
-                                                        <li><a href="category.html">زیردسته ها</a></li>
-                                                        <li><a href="category.html">زیردسته ها</a></li>
-                                                        <li><a href="category.html">زیردسته ها</a></li>
-                                                    </ul>
-                                                </div>
-                                            </li>
                                         @endforelse
 
                                     </ul>
@@ -225,8 +218,15 @@
                     </div>
                 </li>
 
-
-                <li class="custom-link-right"><a href="#" target="_blank"> همین حالا بخرید!</a></li>
+                @auth
+                    <li class="custom-link-right">
+                        <a href="{{ route('client.myProfile.edit') }}" target="_blank"> پروفایل {{ auth()->user()->name }}
+                            <img src="{{ auth()->user()->avatar }}" alt="user-avatar" class="img-circle" width="30" height="30">
+                        </a>
+                    </li
+                @else
+                    <li class="custom-link-right"><a href="#" target="_blank"> همین حالا بخرید!</a></li>
+                @endauth
 
 
             </ul>

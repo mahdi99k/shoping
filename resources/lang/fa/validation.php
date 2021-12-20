@@ -134,7 +134,7 @@ return [
         ],
     ],
     'attributes' => [
-        'address' => 'نشانی',
+        'address' => 'آدرس',
         'age' => 'سن',
         'area' => 'منطقه',
         'available' => 'موجود',
@@ -146,7 +146,7 @@ return [
         'day' => 'روز',
         'description' => 'توضیحات',
         'district' => 'ناحیه',
-        'email' => 'پست الکترونیکی',
+        'email' => 'ایمیل',
         'excerpt' => 'گزیده مطلب',
         'first_name' => 'نام',
         'firstname' => 'نام',
@@ -214,6 +214,7 @@ return [
         'propert_group_id' => 'گروه مشخصات',
         'start_at' => 'زمان شروع تخفیف',
         'end_at' => 'زمان پایان تخفیف',
+        'recaptcha' => 'Hey!!! :attribute is wrong!',  // custom
 
     ],
 ];

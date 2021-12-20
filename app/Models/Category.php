@@ -33,7 +33,10 @@ class Category extends Model
     public function getAllSubCategoryProducts()  // جدول محصولات اگر آیدی قسمت کتگوری مساوی با قسمت دسته بندی ها بچه ها بیا فقط اینا نمایش بده (دسته پدر نمایش نده)
     {
         $childrenIds = $this->children()->pluck('id');  // آیدی چیلدرن قسمت دسته بندی ها بیا آیدی بگیر| پلاک یعنی اولی با دومی مقایسه کن که آیدی منحصر به فرد دومی نمیخواد
-        return Product::query()->whereIn('category_id', $childrenIds)->orWhere('category_id', '=', $this->id)->get();
+        return Product::query()
+            ->whereIn('category_id', $childrenIds)
+            ->orWhere('category_id', $this->id)
+            ->paginate(16);
         // آیدی کتکوری قسمت چیلدرن یا قسمت محصولات دسته بندی ها یکی بود | 2-اگر کلیدخارجی اگر مساوی بود با پرنت کتگوری ها نمایش بده
     }
 

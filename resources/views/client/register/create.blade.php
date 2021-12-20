@@ -8,11 +8,7 @@
     <div class="container">
 
         <!-- Breadcrumb Start-->
-        <ul class="breadcrumb" style="margin-top: 5px">
-            <li><a href="index.html" style="font-size: 15px;color: royalblue"><i class="fa fa-home"></i></a></li>
-            <li><a href="login.html" style="font-size: 15px;color: royalblue">حساب کاربری</a></li>
-            <li><a href="register.html" style="font-size: 15px;color: royalblue">ثبت نام</a></li>
-        </ul>
+    @include('client.composer.breadcrumbLoginRegister')
         <!-- Breadcrumb End-->
 
 
@@ -20,7 +16,7 @@
             <!--Middle Part Start-->
             <div class="col-sm-9" id="content">
                 <h1 class="title">ثبت نام حساب کاربری</h1>
-                <p>اگر قبلا حساب کاربریتان را ایجاد کرد اید جهت ورود به <a href="login.html">صفحه لاگین</a> مراجعه کنید.</p>
+                <p>اگر قبلا حساب کاربریتان را ایجاد کرد اید جهت ورود به <a href="{{ route('client.login.create') }}">صفحه لاگین</a> مراجعه کنید.</p>
 
 
                 <form class="form-horizontal" method="post" action="{{ route('client.register.sendmail') }}">
@@ -40,7 +36,9 @@
 
                     <div class="buttons">
                         <div class="pull-right">
-                            <input type="submit" class="btn btn-primary" value="ارسال" style="border-radius: 3px">
+                            <input type="submit" class="btn btn-primary" value="ارسال" style="border-radius: 3px;margin-left: 8px">
+                            <a href="{{ route('client.login.google') }}" class="btn btn-success fa fa-google">ثبت نام با حساب گوگل</a>
+
                         </div>
                     </div>
 

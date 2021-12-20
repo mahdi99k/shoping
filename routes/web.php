@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\AdminController\BrandController;
 use App\Http\Controllers\AdminController\CategoryController;
+use App\Http\Controllers\ClientController\CategoryController as ClientCategoryController;
 use App\Http\Controllers\AdminController\DiscoutController;
 use App\Http\Controllers\AdminController\FeaturedCategoryController;
 use App\Http\Controllers\AdminController\GalleryController;
@@ -19,8 +20,12 @@ use App\Http\Controllers\ClientController\CardController;
 use App\Http\Controllers\ClientController\CommentController;
 use App\Http\Controllers\AdminController\CommentController as AdminCommentController;
 use App\Http\Controllers\ClientController\LikeController;
+use App\Http\Controllers\ClientController\LoginController;
+use App\Http\Controllers\ClientController\OrderController;
 use App\Http\Controllers\ClientController\ProductController as ClientProductController;
 use App\Http\Controllers\ClientController\IndexController;
+use App\Http\Controllers\ClientController\ProductSearchController;
+use App\Http\Controllers\ClientController\ProfileController;
 use App\Http\Controllers\ClientController\RegisterController;
 use App\Http\Middleware\CheckPermission;
 use Illuminate\Support\Facades\Route;
@@ -174,9 +179,45 @@ Route::prefix('')->name('client.')->group(function () {
     Route::get('/register/otp/{user}', [RegisterController::class, "otp"])->name('register.otp'); /* ارسال کد تایید به ایمیل */
     Route::post('/register/verifiedOtp/{user}', [RegisterController::class, "verifiedOtp"])->name('register.verifiedOtp'); /* صفحه تایید ایمیل و لاگین شدن */
     Route::delete('/logout', [RegisterController::class, "logout"])->name('logout');
+    Route::middleware('auth')->group(function () {   //create password  | لاگین باشد تا ببینه
+        Route::get('/changeUserPassword/edit', [RegisterController::class, "changeUserPassword_edit"])->name('changeUserPassword.edit');
+        Route::patch('/changeUserPassword/update', [RegisterController::class, "changeUserPassword_update"])->name('changeUserPassword.update');
+    });
+
+    //login:
+    Route::middleware('guest')->group(function () {  //اگر لاگین بود نتونه ببینه صفحه ورود که بار اضافی بیاره رو سرور
+        Route::get('/login/create', [LoginController::class, "create"])->name('login.create');
+        Route::post('/login/store', [LoginController::class, "store"])->name('login.store');
+        Route::get('/login/google', [LoginController::class, "redirectToProvider"])->name('login.google');  //socialite نمایش جیمیل کاربر
+        Route::get('/login/google/callback', [LoginController::class, "handleProviderCallback"]);  //socialite لاگین بود ورود اگر نبود ثبت نام بکنه
+    });
+
+    //userProfile:
+    Route::middleware('auth')->group(function () {  // فقط لاگین باش پروفایل کاربری میبینه
+        Route::get('/myProfile', [ProfileController::class, "edit"])->name('myProfile.edit');  //create prodile
+        Route::patch('/myProfile', [ProfileController::class, "update"])->name('myProfile.update');
+        Route::get('/myProfile/changePassword/edit', [ProfileController::class, "changePassword_edit"])->name('myProfile.changePassword.edit');//cgange password
+        Route::patch('/myProfile/changePassword/update', [ProfileController::class, "changePassword_update"])->name('myProfile.changePassword.update');
+    });
 
     //Cart:
-    Route::post('/card/{product}', [CardController::class, "store"])->name('card.store');
+    Route::get('/card/', [CardController::class, "index"])->name('cart.index');
+    Route::post('/card/{product}', [CardController::class, "store"])->name('cart.store');
+    Route::delete('/card/{product}', [CardController::class, "destroy"])->name('cart.destroy');
+
+    //orders
+    Route::get('/orders/create', [OrderController::class, "create"])->name('orders.create');
+    Route::post('/orders/store', [OrderController::class, "store"])->name('orders.store');
+    Route::get('/orders/payment/callback', [OrderController::class, "callback"])->name('orders.callback');  // گرفتن پیام پرداخت یا عدم پرداخت پول
+    Route::get('/orders/{order}', [OrderController::class, "show"])->name('orders.show');  //نمایش پیام موفقیت یا عدم موفقیت پرداخت پول
+
+    //category
+    Route::get('/category/{category}', [ClientCategoryController::class, "index"])->name('category.index');
+    Route::get('/getChildCategory/{childCategory}', [ClientCategoryController::class, "getChild"])->name('category.getChild');
+    Route::get('/getsubtitle/{subtitle}', [ClientCategoryController::class, "subtitle"])->name('category.subtitle');
+
+    //productSearch:
+    Route::post('/product/search', [ProductSearchController::class, "fetchData"]);  //LiveSearch 5,50000 product
 
 });
 /* End Route Website */
@@ -193,8 +234,7 @@ Route::prefix('adminPanel')->middleware([/*CheckPermission::class . ':view-dashb
     Route::resource("/brands", BrandController::class)->parameters(['brands' => 'id']);
 
     //product:
-    Route::resource('/product', ProductController::class)/*->parameters(['product' => 'id'])*/
-    ;
+    Route::resource('/product', ProductController::class);/*->parameters(['product' => 'id'])*/
     Route::resource('/product.gallery', GalleryController::class);  // ساخت پارامتر برای محصول و گالری با نقطه
     Route::resource('/product.discount', DiscoutController::class);
     Route::resource('/offer', OfferController::class);
@@ -225,13 +265,9 @@ Route::prefix('adminPanel')->middleware([/*CheckPermission::class . ':view-dashb
 /* End Route BackEnd */
 
 
+// TODO product->edit.blade.php   $product(update,delete) slug cgange id  AND do problem   |    2)TODO Error Middreware
 
-
-
-// TODO Error Middreware ***********
-// TODO product->create.blade.php   $product(update,delete) slug cgange id  AND do problem
-
-// ---------------------------------- Laravel Shop  Lesson 93 tomorrow 2 film          01 : 20 (+1)   ------------------------------------
+// ---------------------------------- Laravel Shop  Lesson 115 tomorrow 2 film          08 : 00 (+1)   ------------------------------------
 
 
 // Login email  = mahdishmshm13781999@gmail.com   password = ~(W6pvO6*Mahdi99K*1JC2^E42WT5
@@ -2782,7 +2818,7 @@ class Role extends Model
 
 
 //------------------------------- sleectAll & disableAll -- > radio
-//----------------- create.blade.php  (role)
+//----------------- edit.blade.php  (role)
 
 
  <input type="checkbox" name="permissions[]" class="checkedAll" value="{{ $permission->id }}">  {{-- checkedAll فعال کردن همه یا برعکس --}}
@@ -3547,9 +3583,189 @@ public static function newCard(Product $product, Request $request)
 }
 
 
-//======================================================================================================
+//======================================================================================================  price جدا کنه سه رقم سه رقم
+' + parseInt(product.price).toLocaleString() + '       ===          number-format($product->price)
 
 
+//====================================================================================================== payment درگاه پرداخت آفلاین تستی
+
+1)composer require shetabit/payment
+
+2)B سپس دستور php artisan vendor:publish را اجرا کنید تا فایل config/payment.php درون دایرکتوری تنظیمات لاراول قرار بگیرد.
+
+3)  config->payment.php change
+  'mode' => 'sandbox', // can be normal, sandbox, zaringate
+  'merchantId' => '123456789123456789123456789123456789',    //random 36 number
+  'callbackUrl' => 'http://127.0.0.1:8000/order/payment/callback',  //Notification success OR error
+  'description' => 'payment using zarinpal',
+
+4)Order Controller
+  $invoice = (new Invoice)->amount($order->price);  //all price ,price discount
+  //A)invoice صورت حساب   B)callback $driver درگاه پرداختی که استفاده میکنیم $transactionId شماره تراکنش
+  return Payment::purchase($invoice, function ($driver, $transactionId) use ($order) {
+      $order->update([
+           'trnsaction_id' => $transactionId,
+      ]);
+  })->pay()->render();   //پرداخت کن | رندر بکن کد ها
+
+
+php artisan config:cache             //کانفیگ ها که پابلیک کردیم باید کچ کنیم تا بشناسه
+
+//*** config -> oho.init -> Remove the ; from the beginning of extension=php_soap.dll
+
+
+
+
+//======================================================================================================A تغییر نام کاربری و رمز عبور پروفایل
+
+
+
+class ProfileController extends Controller
+{
+
+    public function edit()
+    {
+        return view('client.profile.myProfile.edit');
+    }
+
+
+    public function update(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|min:3|max:40'
+        ]);
+
+//      if ($request->get('name')) {   //برای تغییر اسم کاربر اگر درخواست به سمت نام بود
+        auth()->user()->update([
+            'name' => $request->get('name'),
+        ]);
+        session()->flash('successName', 'نام کاربری جدید با موفقیت ثبت شد');
+        return redirect(route('client.myProfile.edit'));
+    }
+
+
+    public function changePassword_edit()
+    {
+        return view('client.profile.myProfile.changePassword.edit');
+    }
+
+
+    public function changePassword_update(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'password' => 'required|same:password_confirm|min:6|max:25',
+            'password_confirm' => 'required',
+        ]);
+
+        $user = auth()->user();
+        if (!Hash::check($request->get('old_password'), $user->password)) {   //رمز قدیم با رمز دیتابیس یکی باش البته کاربر لاگین شده برابر نبود
+            return back()->withErrors('رمز فعلی مطابقت ندارد !');
+
+        } else {
+            $user->update([
+                'password' => bcrypt($request->get('password')),
+            ]);
+            session()->flash('successPassword', 'رمز عبور جدید با موفقیت ثبت شد');
+            return redirect(route('client.myProfile.edit'));
+        }
+
+    }
+
+}
+
+
+//====================================================================================================== biscolab recaptcha + localhost*
+
+1) composer require biscolab/laravel-recaptcha
+
+2)Laravel 5.5 (or greater) uses package auto-discovery
+'providers' => [
+    ...
+    Biscolab\ReCaptcha\ReCaptchaServiceProvider::class,
+];
+'aliases' => [
+    ...
+    'ReCaptcha' => Biscolab\ReCaptcha\Facades\ReCaptcha::class,
+];
+
+
+3)Create config/recaptcha.php configuration file using the following artisan command:
+$ php artisan vendor:publish --provider="Biscolab\ReCaptcha\ReCaptchaServiceProvider"
+
+
+4)Open .env file and set RECAPTCHA_SITE_KEY and RECAPTCHA_SECRET_KEY:
+  change  -->  'version' => 'v3',    // 'v2'
+
+
+4) php artisan config:cache  هر تغییری در کانفیگ باید بزنیم این کد
+
+
+5)go to website Google Recaptcha -> https://www.google.com/recaptcha/admin/create
+
+
+6) get code siteKey and securityKey -> 6LcZyK4dAAAAAOkSqtNte6BJ2B1heZAlPMjm_0x6 , ...
+
+
+7) copy code head ->
+<head>
+    ...
+    <!-- IMPORTANT!!! remember CSRF token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src='https://www.google.com/recaptcha/api.js?explicit&hl=fa'></script>    //custom code persian recaptcha
+
+    ...
+    <script type="text/javascript">
+        function callbackThen(response){
+            // read HTTP status
+            console.log(response.status);
+
+            // read Promise object
+            response.json().then(function(data){
+                console.log(data);
+            });
+        }
+        function callbackCatch(error){
+            console.error('Error:', error)
+        }
+    </script>
+    ...
+    {!! htmlScriptTagJsApiV3([
+        'action' => 'homepage',
+        'callback_then' => 'callbackThen',
+        'callback_catch' => 'callbackCatch'
+    ]) !!}
+</head>
+
+
+8) php artisan confoge:clear , php artisan config:cache
+
+
+//====================================================================================================== socialite ثبت نام و ورود با یک کلیک + *127.0.0.1
+
+1)composer require laravel/socialite
+
+
+2) copy code in -> config/services.php      //با حساب گوگل
+'goole' => [
+    'client_id' => env('GOOGLE_CLIENT_ID'),
+    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+    'redirect' => env('GOOGLE_CALLBACK'),
+],
+
+
+3)go to website for get client ID and client Secret -> https://console.cloud.google.com/ -> credentials
+
+4) create route  //login:
+    Route::middleware('guest')->group(function () {  //اگر لاگین بود نتونه ببینه صفحه ورود که بار اضافی بیاره رو سرور
+        Route::get('/login/create', [LoginController::class, "create"])->name('login.create');
+        Route::post('/login/store', [LoginController::class, "store"])->name('login.store');
+      **Route::get('/login/google', [LoginController::class, "redirectToProvider"])->name('login.google');  //socialite نمایش جیمیل کاربر
+      **Route::get('/login/google/collback', [LoginController::class, "handleProviderCallback"]);  //socialite لاگین بود ورود اگر نبود ثبت نام بکنه
+    });
+
+
+5) create controller login
 
 
 */

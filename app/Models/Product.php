@@ -19,6 +19,11 @@ class Product extends Model
 
     protected $guarded = ['id'];
     protected $dates = ['deleted_at'];                    // delete data in the column deleted_at
+    protected $appends = [                          // متغیر هایی که نیاز داریم از طریق append فراخوانی بشه به ما میده
+        'price_with_discount',
+//       'image_path',
+//      'has_discount'
+    ];
 
     //---------------------------------------------------
 
@@ -48,15 +53,26 @@ class Product extends Model
 //      return 'slug'; // تو کا پروژه قرار میگیره
 
         //رکوست ها روت ها که درون پرفیکس برای سمت ادمین بودن فقط اسلاگ
-        if (\request()->route()->getPrefix() === '/adminPanel' || \request()->routeIs(['client.home' , 'likes.wishList.index'])) {
+        /*if (\request()->route()->getPrefix() === '/adminPanel' ||
+            \request()->routeIs(['client.home', 'likes.wishList.index', 'client.orders.create', 'client.cart.index'])) {
             return 'slug';
 
         } else {
             $identifier = Route::current()->parameters()['product'];  // پارامتر های جاری یوت پروداکت میگیره
-            if (!ctype_digit($identifier)) {  //ctype_digit  -->  type number
+            if (!ctype_digit($identifier)) {  //ctype_digit --> type number is true اگر عدد نبود پارامترز اسلاگ برگردون اگه عدد بود آیدی
                 return 'slug';
             }
             return 'id';
+        }*/
+
+        if (\request()->routeIs([
+            'client.likes.wishList.index', 'client.likes.store', 'client.likes.destroy',
+            'client.cart.index', 'client.cart.store', 'client.cart.destroy'])) {
+            return 'id';  //اگه جز بالایی بودن آیدی بگیر وگرنه اسلاگ
+
+        } else {
+
+            return 'slug';
         }
 
     }
@@ -66,7 +82,7 @@ class Product extends Model
 
     public function getIsLikedAttribute(): bool
     {
-        return $this->likes()->where('user_id' , '=' , auth()->id())->exists();    // return boolean | آیدی کاربری که لاگین کرده برابر آیدی جدول لایک
+        return $this->likes()->where('user_id', '=', auth()->id())->exists();    // return boolean | آیدی کاربری که لاگین کرده برابر آیدی جدول لایک
     }
 
 

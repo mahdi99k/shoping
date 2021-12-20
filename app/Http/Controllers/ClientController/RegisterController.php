@@ -34,7 +34,6 @@ class RegisterController extends Controller
     }
 
 
-
     public function otp(User $user)
     {
         return view('client.register.verifiedOtp', [
@@ -55,7 +54,8 @@ class RegisterController extends Controller
 
 
         auth()->login($user);                    // کاربر لاگین میکنه
-        return redirect(route('client.home'))->with('loginVerified', "کاربر گرامی به وب سایت خوش آمدید");  // home page
+        return redirect(route('client.changeUserPassword.edit')); // edit password
+        /*return redirect(route('client.home'))->with('loginVerified', "کاربر گرامی به وب سایت خوش آمدید");  // home page*/
     }
 
 
@@ -63,6 +63,32 @@ class RegisterController extends Controller
     {
         auth()->logout();
         return redirect(route('client.home'));
+    }
+
+
+    /*----------  edit and update password user  ----------*/
+
+
+    public function changeUserPassword_edit()
+    {
+        return view('client.register.changePassword.edit');
+    }
+
+
+    public function changeUserPassword_update(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|same:password_confirm|min:6|max:25',  //same:name-input یکی بود اگر با تکرار
+//          'password' => 'required|confirmed|min:6|max:25',  //confirmed یکی بود اگر با تکرار
+        ]);
+
+        if (auth()->check()) {   //just user login
+            auth()->user()->update([
+                'password' => bcrypt($request->get('password')),  //bcrypt -> High Security
+            ]);
+        }
+
+        return redirect(route('client.home'))->with('loginVerified', "کاربر گرامی به وب سایت خوش آمدید");  // home page;
     }
 
 

@@ -1,6 +1,6 @@
 @extends('client.layouts.app')
 
-@section('title' , 'ثبت نام | ورود')
+@section('titleWeb' , 'ورود کاربری')
 
 
 @section('content')
@@ -15,31 +15,36 @@
         <div class="row">
             <!--Middle Part Start-->
             <div class="col-sm-9" id="content">
-                <h1 class="title">تایید حساب کاربری</h1>
-                <p>اگر قبلا حساب کاربریتان را ایجاد کرد اید جهت ورود به <a href="login.html">صفحه لاگین</a> مراجعه کنید.</p>
+                <h1 class="title">ورود کاربری</h1>
 
 
-                <form class="form-horizontal" method="post" action="{{ route('client.register.verifiedOtp' , $user) }}">
+                <form class="form-horizontal" method="post" action="{{ route('client.login.store') }}">
                     @csrf
                     <fieldset id="account" style="margin-bottom: 20px;margin-top: 50px">
-                        <legend>کد ارسال شده به ایمیل خود را وارد نمایید</legend>
-                        @if (session('errorVerified'))
-                            <div class="text-danger margin-bottom-10">{{ session('errorVerified') }}</div>
-                        @endif
+                        <legend>برای ورود اطلاعات خود را وارد نمایید</legend>
                         @include('admin.partials._errors')
 
                         <div class="form-group required">
-                            <label for="input-email" class="col-sm-2 control-label">کد تایید </label>
+                            <label for="input-email" class="col-sm-2 control-label">آدرس ایمل :</label>
                             <div class="col-sm-8">
-                                <input type="text" name="otp" minlength="5" maxlength="5" min="11111" max="99999" class="form-control"
-                                       id="input-email" placeholder="کد تایید را وارد نمایید"  style="border-radius: 3px"  />
+                                <input type="email" name="email" class="form-control" id="input-email" placeholder="لطفا آدرس ایمیل خود را وارد نمایید" style="border-radius: 3px" />
                             </div>
                         </div>
+
+
+                        <div class="form-group required">
+                            <label for="input-email" class="col-sm-2 control-label">رمز عبور :</label>
+                            <div class="col-sm-8">
+                                <input type="password" name="password" class="form-control" id="input-email" placeholder="لطفا رمز عبور خود را وارد نمایید" style="border-radius: 3px" />
+                            </div>
+                        </div>
+
                     </fieldset>
 
                     <div class="buttons">
                         <div class="pull-right">
-                            <input type="submit" class="btn btn-primary" value="تایید حساب کاربری" style="border-radius: 3px">
+                            <input type="submit" class="btn btn-primary" value="ورود" style="border-radius: 3px;margin-left: 8px">
+                            <a href="{{ route('client.login.google') }}" class="btn btn-danger fa fa-google">ورود با حساب گوگل</a>
                         </div>
                     </div>
 
@@ -73,10 +78,4 @@
 
 
 @endsection
-
-
-
-
-
-
 

@@ -1137,7 +1137,9 @@
 
                     @forelse($categories as $parentCategory)   {{-- indexController->$categories فقط دسته های پدر نمایش بده --}}
 
-                        <h3 class="subtitle">{{ $parentCategory->title_fa }} - <a class="viewall" href="category.html">نمایش همه</a></h3>
+                        <h3 class="subtitle">{{ $parentCategory->title_fa }} -
+                            <a class="viewall" href="{{ route('client.category.index' , $parentCategory) }}">نمایش همه</a></h3>
+
                         <div class="owl-carousel latest_category_carousel">
 
                             @foreach ($parentCategory->getAllSubCategoryProducts() as $product )    {{--  فقط دسته بندی های زیر مجموعه یا چیلدرن  --}}
@@ -1160,6 +1162,7 @@
                                                 <span class="price-old">{{ number_format($product->price) }} تومان </span>
                                                 <span class="saving">{{ $product->discount_value . '%' }}</span>
                                             @endif
+
                                         </p>
 
                                         <div class="rating"><span class="fa fa-stack"><i

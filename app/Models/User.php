@@ -21,10 +21,8 @@ class User extends Authenticatable
 
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role_id',
+        'name', 'email', 'password',
+        'role_id', 'avatar', 'google_id'
     ];
 
 
@@ -53,13 +51,13 @@ class User extends Authenticatable
 
     public function comments(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Comment::class , 'user_id');  // هر کاربر تعداد زیادی دارد کامنت
+        return $this->hasMany(Comment::class, 'user_id');  // هر کاربر تعداد زیادی دارد کامنت
     }
 
     //----------------------------- like
     public function likes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Product::class , 'likes')->withTimestamps();   // table=like چون تلفیقی از دو جدولم نیست بهتر بنویسیم
+        return $this->belongsToMany(Product::class, 'likes')->withTimestamps();   // table=like چون تلفیقی از دو جدولم نیست بهتر بنویسیم
     }
 
     //***************************************************************************
@@ -68,7 +66,7 @@ class User extends Authenticatable
     //---------------------------- likeProduct
     public function likeProduct(Product $product)
     {
-        $isLikedBefore = $this->likes()->where('id' , '=' , $product->id)->exists();  //دوبار توی یک جدول بود از یک دیتا بیا جذف کن اگر یک بار بود اضافه
+        $isLikedBefore = $this->likes()->where('id', '=', $product->id)->exists();  //دوبار توی یک جدول بود از یک دیتا بیا جذف کن اگر یک بار بود اضافه
         if ($isLikedBefore) {
             return $this->likes()->detach($product);
         }

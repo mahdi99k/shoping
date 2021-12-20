@@ -13,7 +13,7 @@ class Comment extends Model
 
     public function product(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Product::class , 'product_id' , 'id');  // هر کامن برای یک محصول
+        return $this->belongsTo(Product::class , 'product_id' , 'id');  // هر کامنت برای یک محصول
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
